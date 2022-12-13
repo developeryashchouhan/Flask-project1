@@ -1,0 +1,337 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
+{% endblock %}
+
+{% block content %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Zing Mind</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+           
+            <li><a href="{{url_for('logout') }} ">Log Out</a></li>
+            
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+          <h1 class="page-header">Double DataSource Validation</h1>
+<div>
+
+</div>
+<form name="form2" id="form2" method="POST"  action="{{url_for('DoubleDataSource')}}" enctype="multipart/form-data">
+    <label>
+        output_file_path
+    </label>
+    <input type='text' name='output_file_path' id='output_file_path' form="form2"></input>
+    <br>
+    
+    <label>
+        <h3>
+            Data Source Details
+        </h3> 
+    </label>
+    <br>
+    
+
+    <label>
+        Select data source type 
+    </label>
+    
+    
+    
+            <select name="datasourcetype" id="datasourcetype" onchange="data_source_type()">
+            <option >--Choose--</option>
+            <option value="CSV">CSV</option>
+            <option value="JSON">JSON</option>
+            <option value="XLSX">XLSX</option>
+            <option value="ORACLE">ORACLE</option>
+            <option value="MYSQL">MYSQL</option>
+        </select>
+
+        <div id="div1"></div>
+
+
+
+    <label><h3>Destination Data Source Details</h3></label>
+    <br><label>select destination data source type </label>
+    <select name="datadesttype" id="datadesttype" onchange="data_dest_type()">
+        <option >--Choose--</option>
+        <option value="CSV">CSV</option>
+        <option value="JSON">JSON</option>
+        <option value="XLSX">XLSX</option>
+        <option value="ORACLE">ORACLE</option>
+        <option value="MYSQL">MYSQL</option>
+        
+    </select>
+    
+    <div id="div2"></div>
+    <br>
+    <button type="Submit" form="form2">Submit</button>
+</form>
+
+</body>
+</html>
+
+<script>
+function data_source_type(){
+    var data_type = document.getElementById("datasourcetype");
+   
+    if (data_type.value=="CSV"){
+        var div = document.getElementById("div1")
+        div.innerHTML="";
+        // var datafile = document.createElement("file");
+        // datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile' form ='form1' id='datafile'><br>";
+        
+        var filepath = document.createElement("text");
+        filepath.innerHTML = "<br><label>File Path </label><input type='file' name='DataSourcePath1' id='DataSourcePath1'></input><br>";
+        
+        var delimiter = document.createElement("text");
+        delimiter.innerHTML = "<br><label>Delimiter</label><input type='text' name='Delimiter1' id='Delimiter1'></input><br>";
+       
+        // var skip_rows = document.createElement("text");
+        // skip_rows.innerHTML = "<br><label>skip_rows</label><input type='text' name='skip_rows1' id='skip_rows1'></input><br>";
+        
+        // div.appendChild(datafile);
+        div.appendChild(filepath);
+        div.appendChild(delimiter);        
+        // div.appendChild(skip_rows);
+        
+      
+        
+    }
+    else if(data_type.value=="JSON"){
+
+        var div = document.getElementById("div1")
+        div.innerHTML="";
+        // var datafile = document.createElement("file");
+        // datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile' form ='form1' id='datafile'><br>";
+        
+        var filepath = document.createElement("text");
+        filepath.innerHTML = "<br><label>File Path</label><input type='text' name='DataSourcePath1' id='DataSourcePath1'></input><br>";
+
+        // div.appendChild(datafile);
+        div.appendChild(filepath);
+    }
+    else if(data_type.value=="XLSX"){
+
+        var div = document.getElementById("div1")
+        div.innerHTML="";
+        // var datafile = document.createElement("file");
+        // datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile' form ='form1' id='datafile'><br>";
+
+        var filepath = document.createElement("text");
+        filepath.innerHTML = "<br><label>File Path</label><input type='text' name='DataSourcePath1' id='DataSourcePath1'></input><br>";
+
+        var sheet_no = document.createElement("text");
+        sheet_no.innerHTML = "<br><label>sheet_no</label><input type='text' name='sheet_no1' id='sheet_no1'></input><br>";
+        
+        var skip_rows = document.createElement("text");
+        skip_rows.innerHTML = "<br><label>skip_rows</label><input type='text' name='skip_rows1' id='skip_rows1'></input><br>";
+        
+        // div.appendChild(datafile);
+        div.appendChild(filepath);
+        div.appendChild(sheet_no);
+        div.appendChild(skip_rows);
+
+    }       
+    else {
+        
+        var div = document.getElementById("div1")
+        div.innerHTML="";
+        
+        var server = document.createElement("text");
+        server.innerHTML = "<br><label>Server </label><input type='text' name='Server1' id='Server1'></input><br>";
+
+        var database = document.createElement("text");
+        database.innerHTML = "<br><label>Database</label><input type='text' name='Database1' id='Database1'></input><br>";
+
+        var user = document.createElement("text");
+        user.innerHTML = "<br><label>user</label><input type='text' name='user1' id='user1'></input><br>";
+
+        var password = document.createElement("text");
+        password.innerHTML = "<br><label>password</label><input type='password' name='password1' id='password1'></input><br>";
+
+        var schema_name = document.createElement("text");
+        schema_name.innerHTML = "<br><label>schema_name</label><input type='text' name='schema_name1' id='schema_name1'></input><br>";
+
+        var source_query_filter = document.createElement("text");
+        source_query_filter.innerHTML = "<br><label>source_query_filter</label><input type='text' name='source_query_filter1' id='source_query_filter1'></input><br>";
+
+
+        div.appendChild(server);
+        div.appendChild(database);
+        div.appendChild(user);
+        div.appendChild(password);
+        div.appendChild(schema_name);
+        div.appendChild(source_query_filter);
+    
+    }
+}
+function data_dest_type(){
+    var data_type = document.getElementById("datadesttype");
+   
+    if (data_type.value=="CSV"){
+        var div = document.getElementById("div2");
+        div.innerHTML="";
+        // var datafile = document.createElement("file");
+        // datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile2' form ='form1' id='datafile2'><br>";
+        
+        var filepath = document.createElement("text");
+        filepath.innerHTML = "<br><label>File Path</label><input type='file' name='datasourcepath2' id='datasourcepath2'></input><br>";
+        
+        var delimiter = document.createElement("text");
+        delimiter.innerHTML = "<br><label>Delimiter</label><input type='text' name='delimiter2' id='delimiter2'></input><br>";
+       
+        // var skip_rows = document.createElement("text");
+        // skip_rows.innerHTML = "<br><label>skip_rows</label><input type='text' name='skip_rows2' id='skip_rows2'></input><br>";
+        
+        // div.appendChild(datafile);
+        div.appendChild(filepath);
+        div.appendChild(delimiter);        
+        // div.appendChild(skip_rows);
+        
+      
+        
+    }
+    else if(data_type.value=="JSON"){
+        var div = document.getElementById("div2");
+        div.innerHTML="";
+        // var datafile = document.createElement("file");
+        // datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile2' form ='form1' id='datafile2'><br>";
+        
+        var filepath = document.createElement("text");
+        filepath.innerHTML = "<br><label>File Path </label><input type='text' name='datasourcepath2' id='datasourcepath2'></input><br>";
+        
+        // div.appendChild(datafile);
+        div.appendChild(filepath);
+    }
+    else if(data_type.value=="XLSX"){
+
+        var div = document.getElementById("div2")
+        div.innerHTML="";
+        // var datafile = document.createElement("file");
+        // datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile' form ='form1' id='datafile'><br>";
+
+        var filepath = document.createElement("text");
+        filepath.innerHTML = "<br><label>File Path</label><input type='text' name='DataSourcePath2' id='DataSourcePath1'></input><br>";
+
+        var sheet_no = document.createElement("text");
+        sheet_no.innerHTML = "<br><label>sheet_no</label><input type='text' name='sheet_no2' id='sheet_no1'></input><br>";
+
+        var skip_rows = document.createElement("text");
+        skip_rows.innerHTML = "<br><label>skip_rows</label><input type='text' name='skip_rows2' id='skip_rows1'></input><br>";
+
+        // div.appendChild(datafile);
+        div.appendChild(filepath);
+        div.appendChild(sheet_no);
+        div.appendChild(skip_rows);
+
+}   
+    else {
+       
+        var div = document.getElementById("div2")
+        div.innerHTML="";
+        
+        var server = document.createElement("text");
+        server.innerHTML = "<br><label>Server </label><input type='text' name='Server2' id='Server2'></input><br>";
+
+        var database = document.createElement("text");
+        database.innerHTML = "<br><label>Database</label><input type='text' name='Database2' id='Database2'></input><br>";
+
+        var user = document.createElement("text");
+        user.innerHTML = "<br><label>user</label><input type='text' name='user2' id='user2'></input><br>";
+
+        var password = document.createElement("text");
+        password.innerHTML = "<br><label>password</label><input type='password' name='password2' id='password2'></input><br>";
+
+        var schema_name = document.createElement("text");
+        schema_name.innerHTML = "<br><label>schema_name</label><input type='text' name='schema_name2' id='schema_name2'></input><br>";
+
+        var source_query_filter = document.createElement("text");
+        source_query_filter.innerHTML = "<br><label>source_query_filter</label><input type='text' name='source_query_filter2' id='source_query_filter2'></input><br>";
+
+
+        var rule_file_path = document.createElement("text");
+        rule_file_path.innerHTML = "<br><label>rule_file_path</label><input type='text' name='rule_file_path2' id='rule_file_path2'></input><br>";
+        div.appendChild(server);
+        div.appendChild(database);
+        div.appendChild(user);
+        div.appendChild(password);
+        div.appendChild(schema_name);
+        div.appendChild(source_query_filter);
+    }
+    
+}
+
+</script>
+
+
+
+
+
+      
+{% endblock %}   
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+           
+
+
+
+
+
+
+
+
+
+
+
+
+    
+       

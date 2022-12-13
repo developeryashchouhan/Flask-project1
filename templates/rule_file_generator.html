@@ -1,0 +1,238 @@
+<html>
+    <head>
+        <title>FLASK CSV File Upload</title>
+    </head>
+    <body>
+        <h1>Data Validation</h1>
+        <form method="POST" name="form2" id="form2" action="{{url_for('create_json')}}">
+            
+            <label for="Data Source">Data Source</label>
+            <input type="text" id="Data Source" name="DataSource" value={{file_name}} ></input><br>
+            
+            <label for="Data Object">Data Object</label>
+            <input type="text" id="Data Object" name="DataObject" value='table' ></input><br>
+           
+          
+            <button type="submit" name="button" id="button">submit</button> 
+            <button type="button" onclick="addrow()">Add a new row </button>
+            <button type="button" onclick="deleterow()">Delete row</button>
+        
+
+            <table id ="table"  width: 780px>
+                <colgroup>
+                    <col style="width: 30px">
+                    <col style="width: 50px">
+                    <col style="width: 20px">
+                    <col style="width: 60px">
+                    <col style="width: 20px">
+                    <col style="width: 156px">
+                    <col style="width: 80px">
+                    <col style="width: 84px">
+                    
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>&nbsp &nbsp &nbsp &nbsp </th>
+                        <th>Sr no. </th>
+                        <th>Data Attribute</th>
+                        <th>Rule Name</th>
+                        <th>Order</th>
+                        <th>Data Type</th>
+                        <th>Validation Operator</th>
+                        <th>Value to match</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- {%for i in range(len)%} -->
+                    
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="checkbox"/>
+                        </td>
+                        <td>
+                            <label id="srno{{i+1}}">{{i+1}}</label>
+                        </td>
+                        <td>
+                            <input type="text" id="da{{i+1}}" name="data_attribute{{i+1}}" value={{col_list[i]}}>
+                        </td>
+                        <td>
+                            <input type="text" id="name{{i+1}}" name="name{{i+1}}" value="{{file_name}}_{{col_list[i]}}">
+                        </td>
+                        <td>
+                            <input type="text" id="order{{i+1}}" name="order{{i+1}}" value = {{i+1}}>
+                        </td>
+                        <td>
+                            <select name="datatype{{i+1}}" id="datatype{{i+1}}" onchange="dtchange('{{i+1}}')">
+                                <option value="{{datatype_list[i]}}">{{datatype_list[i]}}</option>
+                                <option value='String'>String</option>
+                                <option value='Integer'>Integer</option>
+                                <option value='Float'>Float</option>
+                                <option value='Double'>Double</option>
+                                <option value='Date'>Date</option>
+                                <option value='DateTime'>DateTime</option>
+                                <option value='Time'>Time</option>
+                                <option value='Year'>Year</option>
+                            </select>
+                        </td>
+                        <td>
+                            <!-- {% if datatype_list[i] == 'String' %} -->
+                            <select name="valop{{i+1}}" id="valop{{i+1}}" >
+                                <option value='Contains'>Contains</option>
+                                <option value='Does not contain'>Does Not Contain</option>
+                                
+                                <option value='Regular Expression'>Regular expression</option>
+                                <option value='Not Null'>Not Null</option>
+                                <option value='Does not equals to'>Does not equals to</option>
+                                <option value='Equals to'>Equals to</option>
+                            </select>
+                            
+                            <!-- {% else %} -->
+                            <select name="valop{{i+1}}" id="valop{{i+1}}" onchange="valopchange('{{i+1}}')">
+                                <option value='Greater than'>greater than</option>
+                                <option value='Less than'>less than</option>
+                                <option value='Between'>Between</option>
+                                <option value='Equals to'>Equals to</option>
+                                <option value='Not Null'>Not Null</option>
+                            </select>
+                            <!-- {% endif %} -->
+                        
+                        </td>
+                        
+                        
+                        <td>
+                            <input type="text" id="valtomatch{{i+1}}" name="valtomatch{{i+1}}">
+                        </td>
+                        
+                    </tr>
+                    <!-- {%endfor%} -->
+
+                </tbody>
+            </table>
+            <button type="submit" name="button" id="button">submit</button> 
+            <button type="button" onclick="addrow()">Add a new row </button>
+            <button type="button" onclick="deleterow()">Delete row</button>
+        </form>
+    </body>
+
+<script>
+    
+    
+    function dtchange(i) {
+        
+        var dt = document.getElementById("datatype"+i);
+        var x = document.getElementById("table").rows.length;
+        var vop = document.getElementById("valop"+i);
+        var valtomatch = document.getElementById("valtomatch"+i);
+        vop.length = 0;
+        
+        if(dt.value=="Date"){
+            valtomatch.type="Date";
+        }
+        if(dt.value=="Time"){
+            valtomatch.type="Time";
+        }
+        if(dt.value=="DateTime"){
+            valtomatch.type="DateTime";
+        }
+        if(dt.value=="String"){
+            vop.options[vop.options.length] = new Option("Contains");
+            vop.options[vop.options.length] = new Option("Does not contain");
+            vop.options[vop.options.length] = new Option("Regular expression");
+            vop.options[vop.options.length] = new Option("Equals to");
+            vop.options[vop.options.length] = new Option("Not Null");
+        }
+        else{
+            vop.options[vop.options.length] = new Option("Greater than");
+            vop.options[vop.options.length] = new Option("Less than");
+            vop.options[vop.options.length] = new Option("Between");
+            vop.options[vop.options.length] = new Option("Equals to");
+            vop.options[vop.options.length] = new Option("Does not equals to");
+            vop.options[vop.options.length] = new Option("Not Null");
+        }
+        }
+        
+  
+  
+
+
+  function addrow() {
+    
+    var table = document.getElementById("table");
+    var x = document.getElementById("table").rows.length;
+    
+    
+    var row = table.insertRow();
+    
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    var cell4 = row.insertCell(3);
+    var cell5 = row.insertCell(4);
+    var cell6 = row.insertCell(5);
+    var cell7 = row.insertCell(6);
+    var cell8 = row.insertCell(7);
+    cell1.innerHTML = "<input type=checkbox id='checkbox' name='checkbox'></input>";
+    cell2.innerHTML= "<label id='srno'></label>";
+    document.getElementById('srno').innerHTML ="   "+x;
+    document.getElementById('srno').id = 'srno'+x;
+    
+    cell3.innerHTML = "<input type='text' id='da'  </input>";
+    document.getElementById('da').name = 'data_attribute'+x;
+    document.getElementById("da").id = 'da'+x;
+   
+    cell4.innerHTML = "<input type=text id='name'></input>";
+    document.getElementById('name').name = 'name'+x;
+    document.getElementById('name').id = 'name'+x;
+
+    cell5.innerHTML = "<input type=text id='order'></input>";
+    document.getElementById('order').name = 'order'+x;
+    document.getElementById('order').value = x;
+    document.getElementById('order').id = 'order'+x;
+    
+    cell6.innerHTML = "<select name='datatype' id='datatype'><option value='String'>String</option><option value='Integer'>Integer</option><option value='Float'>Float</option><option value='Double'>Double</option><option value='Date'>Date</option><option value='DateTime'>DateTime</option><option value='Time'>Time</option><option value='Year'>Year</option></select>";
+    
+    document.getElementById('datatype').name = 'datatype'+x;
+    document.getElementById('datatype').id = 'datatype'+x;
+    document.getElementById('datatype'+x).onchange = function() {dtchange(x)};
+   
+    cell7.innerHTML = "<select name='valop' id='valop'><option value='Contains'>Contains</option><option value='Does not contain'>does not contain</option><option value='Regular Expression'>Regular expression</option><option value='Not Null'>Not Null</option><option value='Equals to'>Equals to</option></select>";
+                                
+    document.getElementById('valop').name = 'valop'+x;
+    document.getElementById('valop').id = 'valop'+x;
+    
+    
+
+    cell8.innerHTML = "<input type=text id='valtomatch'></input>";
+    document.getElementById('valtomatch').name = 'valtomatch'+x;
+    document.getElementById('valtomatch').id = 'valtomatch'+x;
+    
+    
+    
+    
+    
+  }
+
+  var x = document.getElementById("table").rows.length;
+  
+  
+  document.getElementById('datatype'+x).onchange = function() {dtchange(x)};
+
+
+  function deleterow() {
+     
+      let num = document.getElementsByName("checkbox");
+      for(var i=0;i<=num.length;i++){
+        
+        if (num[i].checked==true){
+            
+           
+            document.getElementById("table").deleteRow(i+1);
+      }}
+     
+      
+      
+      
+  }
+  
+</script>
+</html>

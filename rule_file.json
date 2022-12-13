@@ -1,0 +1,50 @@
+[
+    {
+        "RuleID": "1",
+        "RuleName": "sample1.csv_Month validation",
+        "DataAttribute": "Month",
+        "DataType": "String",
+        "ValidationOperator": "Contains",
+        "ValueToBeMatch": "",
+        "Order": "1",
+        "DataObject": "table",
+        "DataSource": "sample1.csv",
+        "Sequence": "1"
+    },
+    {
+        "RuleID": "2",
+        "RuleName": "sample1.csv_ Average validation",
+        "DataAttribute": "Average",
+        "DataType": "Integer",
+        "ValidationOperator": "Greater than",
+        "ValueToBeMatch": "",
+        "Order": "2",
+        "DataObject": "table",
+        "DataSource": "sample1.csv",
+        "Sequence": "2"
+    },
+    {
+        "RuleID": "3",
+        "RuleName": "sample1.csv_2005 validation",
+        "DataAttribute": "2005",
+        "DataType": "Integer",
+        "ValidationOperator": "Greater than",
+        "ValueToBeMatch": "",
+        "Order": "3",
+        "DataObject": "table",
+        "DataSource": "sample1.csv",
+        "Sequence": "3"
+    },
+    {
+        "RuleID": "4",
+        "RuleName": "sample1.csv_2006 validation",
+        "DataAttribute": "2006",
+        "DataType": "Integer",
+        "ValidationOperator": "Greater than",
+        "ValueToBeMatch": "",
+        "Order": "4",
+        "DataObject": "table",
+        "DataSource": "sample1.csv",
+        "Sequence": "4"
+    }
+]

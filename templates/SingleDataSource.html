@@ -1,0 +1,192 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+Single Data Source Validation
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
+{% endblock %}
+
+{% block content %}
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Zing Mind</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+           
+            <li><a href="{{url_for('logout') }} ">Log Out</a></li>
+            
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+          <h1 class="page-header">Single DataSource Validation</h1>
+<div>
+
+</div>
+<form name="form1" id="form1" method="POST"  action="{{url_for('SingleDataSource')}}" enctype="multipart/form-data">
+    <!-- <style>
+        div {
+          margin-bottom: 10px;
+        }
+        label {
+          display: inline-block;
+          width: 130px;
+          text-align: left;
+        }
+        
+      </style> -->
+
+      
+    
+    <br><label>Data Source</label>
+    <select name="datasourcetype" id="datasourcetype"  onchange="data_source_type()" required>
+        <option >--Choose--</option>
+        <option value="CSV">CSV</option>
+        <!-- <option value="JSON">JSON</option>
+        <option value="ORACLE">ORACLE</option>
+        <option value="MYSQL">MYSQL</option>
+     -->
+    </select><br>
+    
+    
+    <div id="div1"></div>
+
+    <br>
+    <br><input type='submit' form ='form1' value='submit'>
+    
+</form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function data_source_type(){
+      var data_type = document.getElementById("datasourcetype");
+      
+      if (data_type.value=="CSV"){
+          var div = document.getElementById("div1")
+          div.innerHTML="";
+          // var datafile = document.createElement("file");
+          // datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile' form ='form1' id='datafile'><br>";
+          
+          var filepath = document.createElement("text");
+          filepath.innerHTML = "<br><label>File Path </label><input type='file' name='DataSourcePath' id='DataSourcePath ' accept='.csv' required></input><br>";
+          
+          var delimiter = document.createElement("text");
+          delimiter.innerHTML = "<br><label>Delimiter</label><input type='text' name='Delimiter' id='Delimiter' value = ',' required></input><br>";
+          
+      
+          var output_file_path = document.createElement("text");
+          output_file_path.innerHTML = "<br><label>output_file_path</label><input type='text' name='output_file_path' id='output_file_path'></input><br>";
+          
+          // var select_rows = document.createElement("text");
+          // select_rows.innerHTML = "<br><label>select_rows</label><input type='text' name='sskip_rows' id='sskip_rows'></input><br>";
+          
+          // div.appendChild(datafile);
+          div.appendChild(filepath);
+          div.appendChild(delimiter); 
+          div.appendChild(output_file_path);       
+          // div.appendChild(select_rows);
+          
+        
+          
+      }
+      // else if(data_type.value=="JSON"){
+      
+      //     var div = document.getElementById("div1")
+      //     div.innerHTML="";
+      //     var datafile = document.createElement("file");
+      //     datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile' form ='form1' id='datafile'><br>";
+          
+      //     var filepath = document.createElement("text");
+      //     filepath.innerHTML = "<br><label>File Path</label><input type='text' name='DataSourcePath' id='DataSourcePath'></input><br>";
+      
+      //     div.appendChild(datafile);
+      //     div.appendChild(filepath);
+      // }
+      // else if(data_type.value=="MYSQL" || data_type.value=="ORACLE"){
+          // var div = document.getElementById("div1")
+          // div.innerHTML="";
+          
+          // var server = document.createElement("text");
+          // server.innerHTML = "<br><label>Server </label><input type='text' name='Server' id='Server'></input><br>";
+      
+          // var database = document.createElement("text");
+          // database.innerHTML = "<br><label>Database</label><input type='text' name='Database' id='Database'></input><br>";
+      
+          // var user = document.createElement("text");
+          // user.innerHTML = "<br><label>user</label><input type='text' name='user' id='user'></input><br>";
+      
+          // var password = document.createElement("text");
+          // password.innerHTML = "<br><label>password</label><input type='password' name='password' id='password'></input><br>";
+      
+          // var schema_name = document.createElement("text");
+          // schema_name.innerHTML = "<br><label>schema_name</label><input type='text' name='schema_name' id='schema_name'></input><br>";
+      
+          // var source_query_filter = document.createElement("text");
+          // source_query_filter.innerHTML = "<br><label>source_query_filter</label><input type='text' name='source_query_filter' id='source_query_filter'></input><br>";
+      
+      
+          // var output_file_path = document.createElement("text");
+          // output_file_path.innerHTML = "<br><label>output_file_path</label><input type='text' name='output_file_path' id='output_file_path'></input><br>";
+          // div.appendChild(server);
+          // div.appendChild(database);
+          // div.appendChild(user);
+          // div.appendChild(password);
+          // div.appendChild(schema_name);
+          // div.appendChild(source_query_filter);
+      
+      }
+      </script>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+           
+
+
