@@ -6,12 +6,20 @@
 body {
   padding-top: 50px;
 }
-
+.navbar-brand{
+  height: 70px;
+}
 
 /*
  * Global add-ons
  */
-
+ header {
+  width: 100%;
+  height: 100vh;
+  background-image: linear-gradient(rgba(252, 245, 245, 0.3), rgba(0, 0, 0, 0.15)),url("pexels-lukas-590022.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 .sub-header {
   padding-bottom: 10px;
   border-bottom: 1px solid #eee;
@@ -21,8 +29,42 @@ body {
  * Top navigation
  * Hide default border to remove 1px line.
  */
+ .navbar-collapse collapse {
+  height: 10vh;
+  background: rgba(255, 255, 255, 0.992);
+  color: rgb(246, 241, 241);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+  
+}
+.login_button{
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  background-color: white; 
+  color: black; 
+  border: 2px solid #4CAF50;
+}
+.login_button:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+.btn-group{
+
+  margin-top: 15px;
+  margin-right: 10px;
+}
 .navbar-fixed-top {
   border: 0;
+  background-color: #f5f5f5;
+
 }
 
 /*

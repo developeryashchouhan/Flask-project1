@@ -10,6 +10,7 @@ Sign Up
 {% endblock %}
 
 {% block content %}
+<header>
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -19,7 +20,7 @@ Sign Up
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Zing Mind</a>
+      <a href="https://zingmind.com/"><img class="navbar-brand" src="../static/zingmind.png"   ALT="align box" ALIGN=CENTER></a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       
@@ -31,10 +32,17 @@ Sign Up
   <br>
 <div class="container">
 
-  <form class="form-signin" method= "POST", action="/signup">
+  <form class="form-signin" method= "POST", action="/signup"><br>
+    {% with messages=get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+   <div class='alert alert-{{category}} text-center  show m-auto'>
+{{ message }}
+</div>
+{% endfor %}
+{% endwith %}
     
     <h2 class="form-signin-heading">Add User</h2>
-    <h4 align="center" style="color:rgb(0, 255, 13);">{{msg}}</h4>
+   
     {{ form.hidden_tag() }}
     {{ wtf.form_field(form.username) }}
     {{ wtf.form_field(form.email) }}
@@ -42,5 +50,7 @@ Sign Up
     <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
   </form>
 
-</div> <!-- /container -->
+</div> 
+</header>
+<!-- /container -->
 {% endblock %}

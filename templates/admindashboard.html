@@ -10,7 +10,7 @@ Admin Dashboard
 {% endblock %}
 
 {% block content %}
-
+<header>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -20,48 +20,44 @@ Admin Dashboard
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Zing Mind</a>
+          <a href="https://zingmind.com/"><img class="navbar-brand" src="../static/zingmind.png"   ALT="align box" ALIGN=CENTER></a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
+        <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-           
-            <li><a href="{{url_for('logout') }} ">Log Out</a></li>
-           
+            <div class="btn-group" role="group">
+              <div class="dropdown">
+                <button class="login_button dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Select Here &#9660;
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                 <li> <a class="dropdown-item" href="{{url_for('manageusers')}}">Manage User</a></li>
+                  <li><a class="dropdown-item" href="{{url_for('signup')}}">Add User</a></li>
+                  <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li>
+                </div>
+              </div>
+             </div>
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+              <form  name="form0" method="POST"  action="{{url_for('Admin_data_validation')}}" >
+                <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"   value="SingleDataSource" class="login_button">SingleDataSource</button></a>&nbsp;&nbsp;
+                <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"  value="DoubleDataSource" class="login_button">DoubleDataSource</button></a>
+              </form>
             
-          </ul>
-          <form class="navbar-form navbar-right">
-            <input type="text" class="form-control" placeholder="Search...">
-          </form>
+             
+
+
+            </div>
+            </ul>
+            
+          
+    
+          
         </div>
       </div>
     </nav>
-    <div>
-
-
-   
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-4 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            
-            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-            <li><a href="{{url_for('manageusers')}}"><button name="Submitbutton" type="submit" class="btn btn-info">Manage Users</button></a></li>
-            <li><a href="{{url_for('signup')}}"><button name="Submitbutton" type="submit" class="btn btn-info">Click here to add user</button></a></li>
-           
-            <form id="form0" name="form0" method="POST"  action="{{url_for('data_validation')}}" >
- 
-              <a href="{{url_for('data_validation')}}"><button style="margin-left: 20px;margin-top: 10px;" name="Submitbutton" type="submit" value="SingleDataSource" class="btn btn-info">Single Data Source Validation</button></a><br><br>
-              <a href="{{url_for('data_validation')}}"><button style="margin-left: 20px" name="Submitbutton" type="submit" value="DoubleDataSource" class="btn btn-info">Double Data Source Validation</button></a>
-     
-           </form>
-            
-          </ul>
-        
-        </div> 
-          
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Welcome To Admin Page</h1>
+    
+    
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
+          <h1 align="LEFT">Welcome To Admin Page</h1>
 
           
 
@@ -70,4 +66,6 @@ Admin Dashboard
         </div>
       </div>
     </div>
+  </header>
 {% endblock %}
+

@@ -1,15 +1,38 @@
-{% extends 'admin/base.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../static/style.css"/>
+	
+	 <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet"> 
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">  
+</head>
+<body>
 
-{% block access_control %}
-{% if current_user.is_authenticated %}
-<div class="dropdown show">
-  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="icon-user"></i> {{ current_user.login }} <span class="caret"></span>
-  </a>
+<header>
+	
+<nav>
+	<div class="logo"> <h1 style="font-size: 20px;"> ZING MIND</h1> </div>
+	<div class="menu">
+		<a href="#" style="font-size:15px; ">Home</a>
+		<a href="#">gallery</a>
+		<a href="#" target="_blank">about</a>
+		<a href="#">contact</a>
+	</div>
+</nav>
 
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <a class="btn" href="{{ url_for('admin.logout_view') }}">Log out</a>
-  </div>
-</div>
-{% endif %}
-{% endblock %}
+	<main>
+		<section>
+			<h3>Welcome To Zing Mind</h3>
+			<h1>DO COME & VISIT <span class="change_content"> </span> <span style="margin-top: -10px;"> | </span> </h1>
+			<p>"India once is not enough"</p>
+			<a href="#" class="btnone">learn more</a>
+			<a href="#" class="btntwo">login here</a>
+		</section>
+	</main>
+
+
+</header>
+
+</body>
+</html>

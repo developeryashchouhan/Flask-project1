@@ -11,6 +11,7 @@ Login
 {% endblock %}
 
 {% block content %}
+<header>
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -20,7 +21,8 @@ Login
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Zing Mind</a>
+    
+      <a href="https://zingmind.com/"><img class="navbar-brand" src="../static/zingmind.png"   ALT="align box" ALIGN=CENTER></a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       
@@ -34,8 +36,15 @@ Login
 
     <div class="container">
 
-      <form class="form-signin" method= "POST" action ="{{url_for('login')}}">
+      <form class="form-signin" method= "POST" action ="{{url_for('login')}}"><br>
         <h4 align="center" style="color:red;">{{msg}}</h4>
+       {% with messages=get_flashed_messages(with_categories=true) %}
+         {% for category, message in messages %}
+        <div class='alert alert-{{category}} text-center  show m-auto'>
+    {{ message }}
+   </div>
+ {% endfor %}
+{% endwith %}
         <h2 class="form-signin-heading">Login In</h2>
        {{ form.hidden_tag()}}
        {{ wtf.form_field(form.username) }}
@@ -47,5 +56,6 @@ Login
       </form>
 
     </div> 
+  </header>
     <!-- /container -->
 {% endblock %}
