@@ -15,7 +15,7 @@ from flask_wtf import FlaskForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from wtforms import StringField, PasswordField, BooleanField, StringField,  SubmitField
-from wtforms.validators import InputRequired, Email, Length, DataRequired, Length
+from wtforms.validators import InputRequired, Email, Length, DataRequired, Length,EqualTo
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from flask_migrate import Migrate
 from flask_session import Session
@@ -73,7 +73,7 @@ class User(UserMixin,db.Model):
     @staticmethod
     def verify_token(token):
         serial=Serializer(app.config['SECRET_KEY'])
-        print("serial",serial)
+
         try:
             id=serial.loads(token)['id']
             print("id",id)
@@ -98,7 +98,7 @@ class ResetRequestForm(FlaskForm):
     reset = SubmitField('reset')
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('password', validators=[InputRequired(), Length(min=5, max=10)])
+    password = PasswordField('password', validators=[InputRequired(),Length(min=5, max=10) ,EqualTo('confirm_password', message='Passwords must match')])
     confirm_password = PasswordField('confirm_password', validators=[InputRequired(), Length(min=5, max=10)])
     submit = SubmitField('submit') 
 
@@ -146,7 +146,7 @@ def send_mail(user):
     smtp_port = 587                 
     smtp_server = "smtp.gmail.com" 
     email_from = "yash100chouhan@gmail.com"
-    email_to = "yash100chouhan@gmail.com"
+    email_to = user.email
     pswd = "qfgcupcdjotabklg"
     
     message = f'''To reset ur password click on link
@@ -181,13 +181,14 @@ def reset_request():
     form=ResetRequestForm()
     if form.validate_on_submit():
         user=User.query.filter_by(email=form.email.data).first()
-    
         if user:
             send_mail(user)
             print("message sent successfully!!!")
             flash('Reset request sent. Check your mail. ','success')
             return redirect(url_for('login'))
-            
+        else:
+            flash('This email is not registered. please enter registered email','danger') 
+            return redirect(url_for('reset_request'))       
     return render_template('reset_request.html',title='reset request',form=form)
 
 
@@ -205,8 +206,11 @@ def reset_token(token):
         print("password changed")
         flash('password changed! please login!','success')
         return redirect(url_for('login'))
+       
+
     return render_template('change_password.html',form=form)
           
+
 
 @app.route('/',methods=['GET','POST'])
 def index():
@@ -219,8 +223,8 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data ).first()
         if not user:
-            msg="Invalid User Name and Password"        
-            return render_template('login.html',msg=msg,form=form)
+            flash('Invalid User Name and Password','danger')       
+            return render_template('login.html',form=form)
         if user:    
             if check_password_hash(user.password, form.password.data):
                     
@@ -240,8 +244,9 @@ def login():
                         session['id']=data.id
                         session['token']=token
                         return redirect(f"/userdashboard")
-                msg="Invalid User Name and Password"        
-                return render_template('login.html',msg=msg,form=form)
+            else:
+                flash('Invalid User Name and Password','danger')      
+                return render_template('login.html',form=form)
     user1 = User.query.filter_by(username=form.username.data ).all()
     return render_template('login.html',form=form,user=user1)
 
@@ -252,7 +257,7 @@ def login():
 def admindashboard(current_user):
     if current_user:
         pass
-    return render_template("admindashboard.html")
+        return render_template("admindashboard.html")
 
 
 @app.route('/userdashboard',methods=['GET','POST'])
@@ -261,7 +266,7 @@ def admindashboard(current_user):
 def userdashboard(current_user):
     if current_user:
         pass
-    return render_template("userdashboard.html")    
+        return render_template("userdashboard.html")    
 
 # signup route
 @app.route('/signup', methods =['POST','GET'])
@@ -279,13 +284,13 @@ def signup():
                        )
             db.session.add(user)
             db.session.commit()
-            msg="Successfully registered"
-            return render_template('signup.html', form=form,msg=msg)
+            flash('Successfully registered','success')
+            return render_template('signup.html', form=form)
            
         else:
           
-            msg="User already exists. Please Log in."
-            return render_template('signup.html', form=form,msg=msg)
+            flash('User already exists. Please Log in','warning')
+            return render_template('signup.html', form=form)
 
     return render_template('signup.html', form=form)
 
@@ -308,6 +313,7 @@ def updateRoute(id):
 @app.route('/update/<int:id>', methods=['POST','PUT'])
 @login_required
 def update(id):
+    
     if not id or id != 0:
         userDetails = User.query.get(id)
         if userDetails:
@@ -316,9 +322,9 @@ def update(id):
             userDetails.email = new_email
             userDetails.username = new_username
             db.session.commit()
-        msg="Successfully Updated"
+        flash(' Updated Successfully','success')
         userDetails=User.query.all()
-        return render_template('manageusers.html', msg=msg,userDetails=userDetails)
+        return render_template('manageusers.html',userDetails=userDetails)
 
 @app.route('/delete/<int:id>')
 @login_required
@@ -328,8 +334,9 @@ def delete(id):
         if userDetails:
             db.session.delete(userDetails)
             db.session.commit()
-        msg="Deleted Successfully "
-        return render_template('manageusers.html', msg=msg)
+        flash('Successfully Deleted','success')
+        userDetails=User.query.all()
+        return render_template('manageusers.html',userDetails=userDetails)
 
 @app.route('/logout') 
 def logout():
@@ -339,20 +346,18 @@ def logout():
 
 
 #Data Validation source selection
-@app.route('/data_validation',methods=['POST','GET'])
+@app.route('/Admin_data_validation',methods=['POST','GET'])
 @login_required
-def data_validation():
+def Admin_data_validation():
         if request.form["Submitbutton"]=='SingleDataSource':
-            return render_template('SingleDataSource.html')
+            return render_template('AdminSingleDataSource.html')
         else:
-            return render_template('DoubleDataSource.html')
+            return render_template('AdminDoubleDataSource.html')
     
 #Single Data Source Validation
-@app.route("/SingleDataSource", methods=['POST','GET'])
+@app.route("/Admin_SingleDataSource", methods=['POST','GET'])
 @login_required
-
-
-def SingleDataSource():
+def Admin_SingleDataSource():
     parser = ConfigParser()
     try:
         data_source_type = request.form['datasourcetype']
@@ -392,9 +397,6 @@ def SingleDataSource():
 
 @app.route("/create", methods=['POST'])
 @login_required 
-
-
-
 def create_json():
     json_object = []
     try:
@@ -448,9 +450,9 @@ def download_file():
 
 
 # DOuble Data Source Validation
-@app.route("/DoubleDataSource", methods=['POST','GET']) 
+@app.route("/Admin_DoubleDataSource", methods=['POST','GET']) 
 @login_required
-def DoubleDataSource():
+def Admin_DoubleDataSource():
     
     parser = ConfigParser()
     try:
@@ -603,10 +605,221 @@ def DoubleDataSource():
         print(Exception)
         raise
         
+#######################user#################
+
+@app.route('/User_data_validation',methods=['POST','GET'])
+@login_required
+def User_data_validation():
+        if request.form["Submitbutton"]=='SingleDataSource':
+            return render_template('UserSingleDataSource.html')
+        else:
+            return render_template('UserDoubleDataSource.html')
+    
+#Single Data Source Validation
+@app.route("/User_SingleDataSource", methods=['POST','GET'])
+@login_required
+def User_SingleDataSource():
+    parser = ConfigParser()
+    try:
+        data_source_type = request.form['datasourcetype']
+        if data_source_type=='CSV':             
+            file = request.files['DataSourcePath']
+            filename = secure_filename(file.filename)
+            file_path=os.path.join(basedir, file.filename)
+            delimiter = request.form['Delimiter']
+            output_file_path = request.form['output_file_path']
+            data = pd.read_csv(file_path)
+            col_list = list(data.columns)
+            data_type_list = list(data.iloc[1])
+        try:
+             
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:    
+                file.write("")  
+            parser.add_section("APP")            
+            parser.set("APP",'RULE_FILE_PATH',os.getcwd()+"\\rule_file.json")
+            parser.set("APP",'SOURCE_TYPE',data_source_type)
+            parser.set("APP",'OUTPUT_FILE',output_file_path)
+            parser.add_section("SOURCE")
+            parser.set("SOURCE","SOURCE_DATA_FILE_PATH", file_path)
+            parser.set("SOURCE","Delimiter", delimiter)
+           
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file: 
+                parser.write(file)
+
+        except:
+             print(Exception)
+             raise
+
+        return render_template('rule_file_generator.html',file_path=file_path,data=data,file_name = filename, col_list=col_list,datatype_list=[get_datatype(data) for data in data_type_list],len = len(col_list))
+    except:
+        print(Exception)
+        raise
+    
+
+
+
+
+# DOuble Data Source Validation
+@app.route("/User_DoubleDataSource", methods=['POST','GET']) 
+@login_required
+def User_DoubleDataSource():
+    
+    parser = ConfigParser()
+    try:
+        with open("C:\\rulengine_master\configuration.ini", 'w') as file:
+            file.write("")  
+        output_file_path = request.form['output_file_path'] 
+        
+        
+
+        data_source_type = request.form['datasourcetype']
+
+        
+        
+        if data_source_type == 'CSV':
+
+            file1 = request.files['DataSourcePath1'] 
+            filename1=secure_filename(file1.filename)
+            file_path1=os.path.join(basedir, file1.filename)
+            delimiter1 = request.form['Delimiter1']
+            
+            parser.add_section("APP")
+            parser.set("APP",'SOURCE_TYPE',data_source_type)
+            parser.set("APP",'OUTPUT_FILE',output_file_path)
+            parser.add_section("SOURCE")
+            parser.set("SOURCE","SOURCE_DATA_FILE_PATH", file_path1)
+            parser.set("SOURCE","Delimiter", delimiter1)
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:
+                parser.write(file)
+            
+        if data_source_type == 'JSON':
+            file_path1 = request.form['DataSourcePath1'] 
+            parser.add_section("APP")
+            parser.set("APP",'SOURCE_TYPE',data_source_type)
+            parser.set("APP",'OUTPUT_FILE',output_file_path)
+            parser.add_section("SOURCE")
+            parser.set("SOURCE","SOURCE_DATA_FILE_PATH", file_path1)
+            
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:
+                parser.write(file)
+
+        if data_source_type == 'XLSX':
+            file_path1 = request.form['DataSourcePath1'] 
+            sheet_no1 = request.form['sheet_no1'] 
+            skip_rows1 = request.form['skip_rows1'] 
+
+            parser.add_section("APP")
+            parser.set("APP",'SOURCE_TYPE',data_source_type)
+            parser.set("APP",'OUTPUT_FILE',output_file_path)
+            parser.add_section("SOURCE")
+            parser.set("SOURCE","SOURCE_DATA_FILE_PATH", file_path1)
+            parser.set("SOURCE","SHEET_NO", sheet_no1)
+            parser.set("SOURCE","SKIP_ROWS", skip_rows1)
+  
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:
+                parser.write(file)
+
+        if data_source_type == 'ORACLE' or data_source_type == 'MYSQL':
+            server1 = request.form['Server1'] 
+            database1 = request.form['Database1'] 
+            user1 = request.form['user1'] 
+            password1 =file_path = request.form['password1'] 
+            schema_name1 = request.form['schema_name1']            
+            source_query_filter1 = request.form['source_query_filter1'] 
+            parser.add_section("APP")
+            parser.set("APP",'SOURCE_TYPE',data_source_type)
+            parser.set("APP",'OUTPUT_FILE',output_file_path)
+            parser.add_section("SOURCE")
+            parser.set("SOURCE","SERVER", server1)
+            parser.set("SOURCE","DATABASE", database1)
+            parser.set("SOURCE","USER", user1)
+            parser.set("SOURCE","PASSWORD", password1)
+            parser.set("vTurbineMasterData","SCHEMA_NAME", schema_name1)
+            parser.set("vTurbineMasterData","SOURCE_QUERY_FILTER",source_query_filter1)
+
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:
+                parser.write(file)
+         
+        # data dest 
+        data_source_type = request.form['datadesttype']
+        parser.set("APP",'DEST_TYPE',data_source_type)
+
+        if data_source_type == 'CSV':
+
+            file2 = request.files['datasourcepath2'] 
+            filename2=secure_filename(file2.filename)
+            file_path2=os.path.join(basedir, file2.filename)
+            delimiter1 = request.form['Delimiter1']
+           
+            delimiter2 = request.form['delimiter2']
+           
+            
+            
+            parser.add_section("DEST")
+            parser.set("DEST","DEST_DATA_FILE_PATH", file_path2)
+            parser.set("DEST","Delimiter", delimiter2)
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:
+                parser.write(file)
+           
+        if data_source_type == 'JSON':
+            file_path2 = request.form['datasourcepath2'] 
+
+            parser.add_section("DEST")
+            parser.set("DEST","DEST_DATA_FILE_PATH", file_path2)
+         
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:
+                parser.write(file)
+
+
+        
+
+
+        if data_source_type == 'XLSX':
+            file_path2 = request.form['DataSourcePath2'] 
+            sheet_no2 = request.form['sheet_no2'] 
+            skip_rows2 = request.form['skip_rows2']
+
+            parser.add_section("DEST")
+            parser.set("DEST","DEST_DATA_FILE_PATH", file_path2)
+            parser.set("DEST","SHEET_NO", sheet_no2)
+            parser.set("DEST","SKIP_ROWS", skip_rows2)
+
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:
+                parser.write(file)
+
+
+        if data_source_type == 'ORACLE' or data_source_type == 'MYSQL':
+            server2 = request.form['Server2'] 
+            database2 = request.form['Database2'] 
+            user2 = request.form['user2'] 
+            password2 = request.form['password2'] 
+            schema_name2 = request.form['schema_name2']            
+            source_query_filter2 = request.form['source_query_filter2'] 
+        
+            parser.add_section("DEST")
+            parser.set("DEST","SERVER", server2)
+            parser.set("DEST","DATABASE", database2)
+            parser.set("DEST","USER", user2)
+            parser.set("DEST","PASSWORD", password2)
+
+            parser.add_section("vTurbineMasterData")
+            parser.set("vTurbineMasterData","SCHEMA_NAME", schema_name2)
+            parser.set("vTurbineMasterData","SOURCE_QUERY_FILTER",source_query_filter2)
+
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:
+                parser.write(file)
+        
+        
+        return "success"
+    except:
+        print(Exception)
+        raise
+
+
 
 #app run
 if (__name__ == "__main__"):
-     app.run()
+     app.run(debug=True)
 
 
 
