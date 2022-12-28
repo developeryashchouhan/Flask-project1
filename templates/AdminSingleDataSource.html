@@ -65,7 +65,8 @@ Single Data Validation
 <div>
 
 </div>
-<form name="form1" id="form1" method="POST"  action="{{url_for('Admin_SingleDataSource')}}" enctype="multipart/form-data">
+<div id="error-message" style="color:red"></div>
+<form name="form1" id="form1" method="POST"  action="{{url_for('Admin_SingleDataSource')}}" enctype="multipart/form-data" >
       
     
   <br><label>Data Source : </label>
@@ -80,15 +81,18 @@ Single Data Validation
   
   
   <div id="div1"></div>
-  <input type='submit' form ='form1' value='submit'>
+  <input type='submit' form ='form1' value='submit' onclick="return validate()">
   
 </form>
+
       </div>
     </div>
   </div>
 
   <script>
-    function data_source_type(){
+
+    
+  function data_source_type(){
     var data_type = document.getElementById("datasourcetype");
     
     if (data_type.value=="CSV"){
@@ -101,9 +105,8 @@ Single Data Validation
         filepath.innerHTML = "<br><label>File Path : </label> <input style='display: inline;' type='file' name='DataSourcePath' id='DataSourcePath ' accept='.csv' required></input><br><br>";
         
         var delimiter = document.createElement("text");
-        delimiter.innerHTML = "<label>Delimiter : </label> <input type='text' name='Delimiter' id='Delimiter' value = ',' required></input><br><br>";
+        delimiter.innerHTML = "<label>Delimiter : </label> <input type='text' name='Delimiter' id='Delimiter'   required></input><br><br>";
         
-    
         var output_file_path = document.createElement("text");
         output_file_path.innerHTML = "<label>output_file_path : </label> <input type='text' name='output_file_path' id='output_file_path'></input><br><br>";
         
@@ -113,7 +116,7 @@ Single Data Validation
         // div.appendChild(datafile);
         div.appendChild(filepath);
         div.appendChild(delimiter); 
-        div.appendChild(output_file_path);       
+        //div.appendChild(output_file_path);       
         // div.appendChild(select_rows);
         
       

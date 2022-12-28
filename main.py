@@ -22,6 +22,13 @@ from flask_session import Session
 from itsdangerous import URLSafeTimedSerializer as Serializer
 import smtplib
 import ssl
+import datetime
+import config
+
+
+
+
+
 
 
 app = Flask(__name__)
@@ -31,6 +38,12 @@ app.config['SECRET_KEY'] = secrets.token_hex(16)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config.from_object(config)
+license_key = app.config['LICENSE_KEY']
+decryption_data=app.config['DECRYPTION_DATA']
+decryption_key=app.config['DECRYPTION_KEY']
+
+#app.config['SECRET_KEY']
 
 Session(app)
 Bootstrap(app) 
@@ -209,13 +222,30 @@ def reset_token(token):
        
 
     return render_template('change_password.html',form=form)
-          
+       
+@app.route('/', methods=['POST'])
+def verify_key():
+    # input_key = request.form['key']
+    if license_key:
+       now = datetime.datetime.now()
+       date_format = "%Y-%m-%d"
+       expiration_date = datetime.datetime.strptime(decryption_data["expiry_date"], date_format)
+       
 
+       if now > expiration_date:
+            print("License has expired")
+            flash('License has expired','danger')
+            return render_template("index.html",key_valid=True)
+       else:
+            return redirect(url_for('login'))
+    
+        
 
 @app.route('/',methods=['GET','POST'])
 def index():
-    return render_template("index.html")
-
+    verify_key()
+    return render_template("index.html", key_valid=False)
+    
 
 @app.route('/login', methods=['GET', 'POST']) 
 def login():
@@ -233,14 +263,14 @@ def login():
                 for data in user1:
                     if data.role =="admin":
                         session['logged_in']=True
-                        token = jwt.encode({'id' : data.id,'exp' : datetime.utcnow() + timedelta(seconds=10)},app.config['SECRET_KEY'], "HS256")
+                        token = jwt.encode({'id' : data.id,'exp' : datetime.datetime.utcnow() + timedelta(seconds=10)},app.config['SECRET_KEY'], "HS256")
                         session['id']=data.id
                         session['token']=token
                         return redirect(f"/admindashboard")
                     else:
                         
                         session['logged_in']=True
-                        token = jwt.encode({'id' : data.id,'exp' : datetime.utcnow() + timedelta(seconds=10)},app.config['SECRET_KEY'], "HS256")
+                        token = jwt.encode({'id' : data.id,'exp' : datetime.datetime.utcnow() + timedelta(seconds=10)},app.config['SECRET_KEY'], "HS256")
                         session['id']=data.id
                         session['token']=token
                         return redirect(f"/userdashboard")
@@ -364,20 +394,26 @@ def Admin_SingleDataSource():
         if data_source_type=='CSV':             
             file = request.files['DataSourcePath']
             filename = secure_filename(file.filename)
-            file_path=os.path.join(basedir, file.filename)
+            #file_path=os.path.join(basedir, file.filename)
+            file_path = os.path.abspath(filename)
             delimiter = request.form['Delimiter']
-            output_file_path = request.form['output_file_path']
-            data = pd.read_csv(file_path)
+            # output_file_path = request.form['output_file_path']
+            data = pd.read_csv(file_path,sep=delimiter,engine='python')         
             col_list = list(data.columns)
+            print("col_list",col_list)
             data_type_list = list(data.iloc[1])
+            print("data_type_list",data_type_list)
+            datatype_list1=[get_datatype(data) for data in col_list]
+            print(datatype_list1)
+
         try:
              
-            with open("C:\\rulengine_master\configuration.ini", 'w') as file:    
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:     
                 file.write("")  
             parser.add_section("APP")            
             parser.set("APP",'RULE_FILE_PATH',os.getcwd()+"\\rule_file.json")
             parser.set("APP",'SOURCE_TYPE',data_source_type)
-            parser.set("APP",'OUTPUT_FILE',output_file_path)
+            # parser.set("APP",'OUTPUT_FILE',output_file_path)
             parser.add_section("SOURCE")
             parser.set("SOURCE","SOURCE_DATA_FILE_PATH", file_path)
             parser.set("SOURCE","Delimiter", delimiter)
@@ -389,7 +425,7 @@ def Admin_SingleDataSource():
              print(Exception)
              raise
 
-        return render_template('rule_file_generator.html',file_path=file_path,data=data,file_name = filename, col_list=col_list,datatype_list=[get_datatype(data) for data in data_type_list],len = len(col_list))
+        return render_template('rule_file_generator.html',file_path=file_path,delimiter=delimiter,data=data,file_name = filename, col_list=col_list,datatype_list=[get_datatype(datatype) for  datatype in data_type_list],len = len(col_list))
     except:
         print(Exception)
         raise
@@ -430,16 +466,22 @@ def AddToJSON(json_object, myDict):
 
 
 def get_datatype(col_name):
-    if type(col_name)==str:
-        return 'String'
-    if type(col_name.item())==int:
-        return 'Integer'
-    if type(col_name.item())==float:
-        return 'Float'
-    if type(col_name.item())==time:
-        return 'Time'
-    if type(col_name.item())==date:
-        return 'Date'
+    try:
+        if type(col_name)==str:
+            return 'String'
+        if type(col_name.item())==int:
+            return 'Integer'
+        if type(col_name.item())==float:
+            return 'Float'
+        if type(col_name.item())==time:
+            return 'Time'
+        if type(col_name.item())==date:
+            return 'Date'
+    except:
+        raise        
+
+
+
 
 
 @app.route("/download")

@@ -20,7 +20,7 @@
 		<a href="#" style="font-size:15px;">gallery</a>
 		<a href="#" style="font-size: 15px;">about</a>
 		<a href="#" style="font-size:15px;">contact</a> -->
-		<a href="{{url_for('login') }} " style="margin-left: 480px;" ><button class="login_button">Login Here</button></a>
+		<!-- <a href="{{url_for('login') }} " style="margin-left: 480px;" ><button class="login_button">Login Here</button></a> -->
 		
 	</div>
 </nav>
@@ -32,7 +32,18 @@
 			<h1>DO COME & VISIT FOR<span class="change_content"> </span> <span style="margin-top: -10px;"> | </span> </h1> -->
 			<!-- <p>Guide your business with our perfect combination of Big Data and Analytics services.</p>
 			<a href="#" class="btnone">Learn More</a> -->
-			<!-- <a href="{{url_for('login') }} " class="btntwo">Login Here</a> -->
+			<h1>Welcome</h1>
+			<a href="{{url_for('login') }} " class="btntwo">Login Here</a> 
+			{% if key_valid %}
+      
+    {% else %}
+	
+      <!-- <h1>Enter your license key</h1> -->
+      <form action="{{ url_for('verify_key') }}" method="POST">
+        <!-- <input type="text" name="key">
+        <input type="submit" value="Verify"> -->
+      </form>
+    {% endif %}
 			{% endblock %}
 		</section>
 	</main>
