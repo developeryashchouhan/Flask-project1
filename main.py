@@ -397,15 +397,31 @@ def Admin_SingleDataSource():
             #file_path=os.path.join(basedir, file.filename)
             file_path = os.path.abspath(filename)
             delimiter = request.form['Delimiter']
-            # output_file_path = request.form['output_file_path']
-            data = pd.read_csv(file_path,sep=delimiter,engine='python')         
+            output_file_path = 'C:\\rulengine_master\Report'
+            SKIP_ROWS = request.form['skip_rows']
+            SHEET_NAME="None"
+            Column_Address="None"
+            Column_Address1="None"
+            data = pd.read_csv(file_path,sep=delimiter,engine='python',encoding='latin1')          
             col_list = list(data.columns)
-            print("col_list",col_list)
             data_type_list = list(data.iloc[1])
-            print("data_type_list",data_type_list)
-            datatype_list1=[get_datatype(data) for data in col_list]
-            print(datatype_list1)
 
+        elif data_source_type=='XLSX' or data_source_type=='XLS':             
+            file = request.files['DataSourcePath']
+            filename = secure_filename(file.filename)
+            #file_path=os.path.join(basedir, file.filename)
+            file_path = os.path.abspath(filename)
+            output_file_path = 'C:\\rulengine_master\Report'
+            SKIP_ROWS = request.form['skip_rows']
+            SHEET_NAME=request.form['sheet_name']
+            Column_Address=request.form['Column_Address']
+            Column_Address1=request.form['Column_Address1']
+            data = pd.read_excel(file_path, engine='openpyxl',sheet_name=SHEET_NAME, skiprows=SKIP_ROWS, dtype=object)
+            delimiter=','          
+            col_list = list(data.columns)
+
+         
+            
         try:
              
             with open("C:\\rulengine_master\configuration.ini", 'w') as file:     
@@ -413,19 +429,22 @@ def Admin_SingleDataSource():
             parser.add_section("APP")            
             parser.set("APP",'RULE_FILE_PATH',os.getcwd()+"\\rule_file.json")
             parser.set("APP",'SOURCE_TYPE',data_source_type)
-            # parser.set("APP",'OUTPUT_FILE',output_file_path)
+            parser.set("APP",'OUTPUT_FILE_PATH',output_file_path)
             parser.add_section("SOURCE")
-            parser.set("SOURCE","SOURCE_DATA_FILE_PATH", file_path)
-            parser.set("SOURCE","Delimiter", delimiter)
+            parser.set("SOURCE",'SOURCE_DATA_FILE_PATH', file_path)
+            parser.set("SOURCE",'SKIP_ROWS', SKIP_ROWS) 
+            parser.set("SOURCE",'SHEET_NAME', SHEET_NAME)
+            parser.set("SOURCE",'Column_Address', Column_Address)
+            parser.set("SOURCE",'Column_Address1', Column_Address1)
            
             with open("C:\\rulengine_master\configuration.ini", 'w') as file: 
                 parser.write(file)
 
         except:
              print(Exception)
-             raise
-
-        return render_template('rule_file_generator.html',file_path=file_path,delimiter=delimiter,data=data,file_name = filename, col_list=col_list,datatype_list=[get_datatype(datatype) for  datatype in data_type_list],len = len(col_list))
+             raise 
+                                                                                            
+        return render_template('rule_file_generator.html',file_path=file_path,delimiter=delimiter,data=data,file_name = filename, col_list=col_list,datatype_list=[get_datatype(data,colName) for  colName in col_list],len = len(col_list))
     except:
         print(Exception)
         raise
@@ -460,25 +479,40 @@ def create_json():
 
 def AddToJSON(json_object, myDict):
     # Data to be written
-    
     json_object.append(myDict)
     return json_object
 
 
-def get_datatype(col_name):
+def get_datatype(datafram,colName):
     try:
-        if type(col_name)==str:
-            return 'String'
-        if type(col_name.item())==int:
-            return 'Integer'
-        if type(col_name.item())==float:
-            return 'Float'
-        if type(col_name.item())==time:
-            return 'Time'
-        if type(col_name.item())==date:
-            return 'Date'
+        if colName in datafram.columns:
+            datatypes = datafram.dtypes[colName]
+            if datatypes == 'object':
+                return 'string'
+            if datatypes == 'int64':
+                return 'int' 
+            if datatypes == 'float':
+                return 'float'
+            if datatypes == 'date':
+                return 'date'
+            if datatypes == 'time':
+                return 'time'                       
+            
     except:
-        raise        
+        raise     
+    # try:
+    #     if type(col_name)==str:
+    #         return 'string'
+    #     if type(col_name.item())==int:
+    #         return 'int'
+    #     if type(col_name.item())==float:
+    #         return 'float'
+    #     if type(col_name.item())==time:
+    #         return 'time'
+    #     if type(col_name.item())==date:
+    #         return 'date'
+    # except:
+    #     raise        
 
 
 
@@ -489,6 +523,12 @@ def get_datatype(col_name):
 def download_file():
     downloaded_file="rule_file.json"
     return send_file(downloaded_file,as_attachment=True)
+
+@app.route("/Regex")
+@login_required
+def Regex():
+    return render_template('Regex.html')
+
 
 
 # DOuble Data Source Validation
@@ -658,6 +698,7 @@ def User_data_validation():
             return render_template('UserDoubleDataSource.html')
     
 #Single Data Source Validation
+
 @app.route("/User_SingleDataSource", methods=['POST','GET'])
 @login_required
 def User_SingleDataSource():

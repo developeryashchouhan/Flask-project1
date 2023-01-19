@@ -1,0 +1,59 @@
+[
+    {
+        "isRuleValidationPass": "True",
+        "ruleValidation": [
+            {
+                "RuleId": "NA",
+                "RuleName": "Precheck-1",
+                "ColumnName": "Precheck-Schema",
+                "Validation_Result": "Pass",
+                "Datatype_RuleFile": "NA",
+                "Datatype_OrignalFile": "NA",
+                "Datatype_Match": "NA",
+                "Orignalsequence": "NA",
+                "RuleSequence": "NA",
+                "SequenceMatch": "Pass"
+            },
+            {
+                "RuleId": "NA",
+                "RuleName": "Precheck-2",
+                "ColumnName": "Precheck-Datatype",
+                "Validation_Result": "Pass",
+                "Datatype_RuleFile": "NA",
+                "Datatype_OrignalFile": "NA",
+                "Datatype_Match": "Pass",
+                "Orignalsequence": "NA",
+                "RuleSequence": "NA",
+                "SequenceMatch": "NA"
+            },
+            {
+                "RuleId": "1",
+                "RuleName": "bool.csv_Month validation",
+                "ColumnName": "Month",
+                "Validation_Result": "Pass",
+                "Datatype_RuleFile": "string",
+                "Datatype_OrignalFile": "string",
+                "Datatype_Match": "True",
+                "Orignalsequence": "1",
+                "RuleSequence": "1",
+                "SequenceMatch": "True"
+            },
+            {
+                "RuleId": "2",
+                "RuleName": "bool.csv_Bool validation",
+                "ColumnName": "Bool",
+                "Validation_Result": "Fail",
+                "Datatype_RuleFile": "string",
+                "Datatype_OrignalFile": "string",
+                "Datatype_Match": "True",
+                "Orignalsequence": "2",
+                "RuleSequence": "2",
+                "SequenceMatch": "True"
+            }
+        ],
+        "isSchemaValidationPass": "True",
+        "schemaValidation": [],
+        "isDatatypeValidationPass": "True",
+        "DatatypeValidation": []
+    }
+]

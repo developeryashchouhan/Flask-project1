@@ -100,10 +100,10 @@ Rule File
                         <input type="checkbox" name="checkbox"/>
                     </td>
                     <td>
-                        <label id="srno{{i+1}}">{{i+1}}</label>
+                        <label id="srno{{i+1}}" aria-readonly="">{{i+1}}</label>
                     </td>
                     <td>
-                        <input type="text" id="da{{i+1}}" name="data_attribute{{i+1}}" value={{col_list[i]}}>
+                        <input type="text" id="da{{i+1}}" name="data_attribute{{i+1}}" value="{{col_list[i]}}">
                     </td>
                     <td>
                         <input type="text" id="name{{i+1}}" name="name{{i+1}}" value="{{file_name}}_{{col_list[i]}}">
@@ -114,35 +114,40 @@ Rule File
                     <td>
                         <select name="datatype{{i+1}}" id="datatype{{i+1}}" onchange="dtchange('{{i+1}}')">
                             <option value="{{datatype_list[i]}}">{{datatype_list[i]}}</option>
-                            <option value='String'>String</option>
-                            <option value='Integer'>Integer</option>
-                            <option value='Float'>Float</option>
-                            <option value='Double'>Double</option>
-                            <option value='Date'>Date</option>
-                            <option value='DateTime'>DateTime</option>
-                            <option value='Time'>Time</option>
-                            <option value='Year'>Year</option>
+                            <option value='string'>string</option>
+                            <option value='int'>int</option>
+                            <option value='float'>float</option>
+                            <option value='double'>double</option>
+                            <option value='boolean'>boolean</option>
+                            <option value='date'>date</option>
+                            <option value='datetime'>datetime</option>
+                            <!-- <option value='time'>time</option>
+                            <option value='year'>year</option> -->
                         </select>
                     </td>
                     <td>
                         <!-- {% if datatype_list[i] == 'String' %} -->
                         <select name="valop{{i+1}}" id="valop{{i+1}}" >
+                            <option value='None'>None</option>
                             <option value='Contains'>Contains</option>
-                            <option value='Does not contain'>Does Not Contain</option>
-                            
+                            <option value='Does not contain'>Does Not Contain</option>                            
                             <option value='Regular Expression'>Regular expression</option>
                             <option value='Not Null'>Not Null</option>
+                            <option value='Null'>Null</option>
                             <option value='Does not equals to'>Does not equals to</option>
                             <option value='Equals to'>Equals to</option>
+                            <option value='Boolean'>Boolean</option>
                         </select>
                         
                         <!-- {% else %} -->
                         <select name="valop{{i+1}}" id="valop{{i+1}}" onchange="valopchange('{{i+1}}')">
+                            <option value='None'>None</option>
                             <option value='Greater than'>greater than</option>
                             <option value='Less than'>less than</option>
-                            <option value='Between'>Between</option>
+                            <!-- <option value='Between'>Between</option> -->
                             <option value='Equals to'>Equals to</option>
                             <option value='Not Null'>Not Null</option>
+                            <option value='Null'>Null</option>
                         </select>
                         <!-- {% endif %} -->
                     
@@ -151,6 +156,9 @@ Rule File
                     
                     <td>
                         <input type="text" id="valtomatch{{i+1}}" name="valtomatch{{i+1}}">
+                    </td>
+                    <td>
+                        <span>&nbsp;&nbsp;</span><a href="{{url_for('Regex')}}" target="_blank" style="color: black;"><class="login_button">Get Regex</button></a>
                     </td>
                     
                 </tr>
@@ -175,29 +183,36 @@ function dtchange(i) {
     var valtomatch = document.getElementById("valtomatch"+i);
     vop.length = 0;
     
-    if(dt.value=="Date"){
-        valtomatch.type="Date";
+    if(dt.value=="date"){
+        valtomatch.type="date";
     }
-    if(dt.value=="Time"){
-        valtomatch.type="Time";
+    if(dt.value=="time"){
+        valtomatch.type="time";
     }
-    if(dt.value=="DateTime"){
-        valtomatch.type="DateTime";
+    if(dt.value=="datetime"){
+        valtomatch.type="datetime";
     }
-    if(dt.value=="String"){
+    if(dt.value=="string"){
         vop.options[vop.options.length] = new Option("Contains");
         vop.options[vop.options.length] = new Option("Does not contain");
         vop.options[vop.options.length] = new Option("Regular expression");
         vop.options[vop.options.length] = new Option("Equals to");
         vop.options[vop.options.length] = new Option("Not Null");
+        vop.options[vop.options.length] = new Option("Null");
+        vop.options[vop.options.length] = new Option("DateTime");
+        vop.options[vop.options.length] = new Option("Date");
+        vop.options[vop.options.length] = new Option("Boolean");
     }
     else{
         vop.options[vop.options.length] = new Option("Greater than");
         vop.options[vop.options.length] = new Option("Less than");
-        vop.options[vop.options.length] = new Option("Between");
+        // vop.options[vop.options.length] = new Option("Between");
         vop.options[vop.options.length] = new Option("Equals to");
         vop.options[vop.options.length] = new Option("Does not equals to");
         vop.options[vop.options.length] = new Option("Not Null");
+        vop.options[vop.options.length] = new Option("Null");
+        vop.options[vop.options.length] = new Option("Date");
+        vop.options[vop.options.length] = new Option("Year");
     }
     }
     
@@ -239,13 +254,13 @@ document.getElementById('order').name = 'order'+x;
 document.getElementById('order').value = x;
 document.getElementById('order').id = 'order'+x;
 
-cell6.innerHTML = "<select name='datatype' id='datatype'><option value='String'>String</option><option value='Integer'>Integer</option><option value='Float'>Float</option><option value='Double'>Double</option><option value='Date'>Date</option><option value='DateTime'>DateTime</option><option value='Time'>Time</option><option value='Year'>Year</option></select>";
+cell6.innerHTML = "<select name='datatype' id='datatype'><option value='string'>string</option><option value='int'>int</option><option value='float'>float</option><option value='double'>double</option><option value='boolean'>boolean</option><option value='date'>date</option><option value='datetime'>datetime</option></select>";
 
 document.getElementById('datatype').name = 'datatype'+x;
 document.getElementById('datatype').id = 'datatype'+x;
 document.getElementById('datatype'+x).onchange = function() {dtchange(x)};
 
-cell7.innerHTML = "<select name='valop' id='valop'><option value='Contains'>Contains</option><option value='Does not contain'>does not contain</option><option value='Regular Expression'>Regular expression</option><option value='Not Null'>Not Null</option><option value='Equals to'>Equals to</option></select>";
+cell7.innerHTML = "<select name='valop' id='valop'><option value='Contains'>Contains</option><option value='Does not contain'>does not contain</option><option value='Regular Expression'>Regular expression</option><option value='Not Null'>Not Null</option><option value='Boolean'>Boolean</option><option value='Null'>Null</option><option value='Equals to'>Equals to</option></select>";
                             
 document.getElementById('valop').name = 'valop'+x;
 document.getElementById('valop').id = 'valop'+x;

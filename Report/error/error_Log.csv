@@ -1,0 +1,2 @@
+ruleId,colName,errorDesc,validation,errorValue,record
+2,Bool,Boolean validation failed,,45,"{'Month': 'Nov', 'Bool': '45'}"
