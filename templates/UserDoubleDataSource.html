@@ -25,7 +25,7 @@ Single Data Validation
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
           <div class="btn-group" role="group">
-            <div class="dropdown">
+            <!-- <div class="dropdown">
               <button class="login_button dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Select Here &#9660;
               </button>
@@ -33,7 +33,7 @@ Single Data Validation
               
                 <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li>
               </div>
-            </div>
+            </div> -->
            </div>
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <form  name="form0" method="POST"  action="{{url_for('User_data_validation')}}" >
@@ -45,6 +45,7 @@ Single Data Validation
 
 
           </div>
+          <a href="{{url_for('login')}}"><button type="submit" id="logout" class="logout_button">Logout</button></a>&nbsp;&nbsp;
           </ul>
           
         

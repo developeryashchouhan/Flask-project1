@@ -33,7 +33,7 @@ Single Data Validation
                 <li> <a class="dropdown-item" href="{{url_for('manageusers')}}">Manage User</a></li>
                 <li><a class="dropdown-item" href="{{url_for('signup')}}">Add User</a></li>
                
-                <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li>
+                <!-- <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li> -->
               </div>
             </div>
            </div>
@@ -42,11 +42,8 @@ Single Data Validation
               <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"   value="SingleDataSource" class="login_button">SingleDataSource</button></a>&nbsp;&nbsp;
               <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"  value="DoubleDataSource" class="login_button">DoubleDataSource</button></a>
             </form>
-          
-           
-
-
           </div>
+          <a href="{{url_for('login')}}"><button type="submit" id="logout" class="logout_button">Logout</button></a>&nbsp;&nbsp;
           </ul>
           
         

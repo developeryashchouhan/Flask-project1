@@ -35,7 +35,7 @@ Manage Users
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                <li> <a class="dropdown-item" href="{{url_for('manageusers')}}">Manage User</a></li>
                 <li><a class="dropdown-item" href="{{url_for('signup')}}">Add User</a></li>
-                <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li>
+                <!-- <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li> -->
               </div>
             </div>
            </div>
@@ -49,6 +49,7 @@ Manage Users
 
 
           </div>
+          <a href="{{url_for('login')}}"><button type="submit" id="logout" class="logout_button">Logout</button></a>&nbsp;&nbsp;
           </ul>
           
         

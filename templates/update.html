@@ -34,20 +34,21 @@ Update
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                
-                <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li>
+                <!-- <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li> -->
               </div>
             </div>
            </div>
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-            <form  name="form0" method="POST"  action="{{url_for('data_validation')}}" >
-              <a href="{{url_for('data_validation')}}"><button type="submit" name="Submitbutton"   value="SingleDataSource" class="login_button">SingleDataSource</button></a>&nbsp;&nbsp;
-              <a href="{{url_for('data_validation')}}"><button type="submit" name="Submitbutton"  value="DoubleDataSource" class="login_button">DoubleDataSource</button></a>
+            <form  name="form0" method="POST"  action="{{url_for('User_data_validation')}}" >
+              <a href="{{url_for('User_data_validation')}}"><button type="submit" name="Submitbutton"   value="SingleDataSource" class="login_button">SingleDataSource</button></a>&nbsp;&nbsp;
+              <a href="{{url_for('User_data_validation')}}"><button type="submit" name="Submitbutton"  value="DoubleDataSource" class="login_button">DoubleDataSource</button></a>
             </form>
           
            
 
 
           </div>
+          <a href="{{url_for('login')}}"><button type="submit" id="logout" class="logout_button">Logout</button></a>&nbsp;&nbsp;
           </ul>
           
         

@@ -25,7 +25,7 @@ Rule File
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
               <div class="btn-group" role="group">
-                <div class="dropdown">
+                <!-- <div class="dropdown">
                   <button class="login_button dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Select Here &#9660;
                   </button>
@@ -34,23 +34,16 @@ Rule File
                   
                     <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li>
                   </div>
-                </div>
+                </div> -->
                </div>
               <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <form  name="form0" method="POST"  action="{{url_for('Admin_data_validation')}}" >
+                <!-- <form  name="form0" method="POST"  action="{{url_for('Admin_data_validation')}}" >
                   <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"   value="SingleDataSource" class="login_button">SingleDataSource</button></a>&nbsp;&nbsp;
                   <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"  value="DoubleDataSource" class="login_button">DoubleDataSource</button></a>
-                </form>
-              
-               
-  
-  
+                </form> -->
               </div>
+              <a href="{{url_for('login')}}"><button type="submit" id="logout" class="logout_button">Logout</button></a>&nbsp;&nbsp;
               </ul>
-              
-            
-      
-            
           </div>
         </div>
       </nav>
@@ -83,13 +76,13 @@ Rule File
             <thead>
                 <tr>
                     <th>&nbsp &nbsp &nbsp &nbsp </th>
-                    <th>Sr no. </th>
-                    <th>Data Attribute</th>
-                    <th>Rule Name</th>
-                    <th>Order</th>
-                    <th>Data Type</th>
-                    <th>Validation Operator</th>
-                    <th>Value to match</th>
+                    <th>Sr no. </th><span>&nbsp;&nbsp;</span>
+                    <th>Data Attribute</th><span>&nbsp;&nbsp;</span>
+                    <th>Rule Name</th><span>&nbsp;&nbsp;</span>
+                    <th>Order</th><span>&nbsp;&nbsp;</span>
+                    <th>Data Type</th><span>&nbsp;&nbsp;</span>
+                    <th>Validation Operator</th><span>&nbsp;&nbsp;</span>
+                    <th>Value to match</th><span>&nbsp;&nbsp;</span>
                 </tr>
             </thead>
             <tbody>
@@ -121,8 +114,6 @@ Rule File
                             <option value='boolean'>boolean</option>
                             <option value='date'>date</option>
                             <option value='datetime'>datetime</option>
-                            <!-- <option value='time'>time</option>
-                            <option value='year'>year</option> -->
                         </select>
                     </td>
                     <td>
@@ -148,6 +139,9 @@ Rule File
                             <option value='Equals to'>Equals to</option>
                             <option value='Not Null'>Not Null</option>
                             <option value='Null'>Null</option>
+                            <option value='Regular expression'>Regular expression</option>
+                            <option value='Float'>Float</option>
+                            <option value='Boolean'>Boolean</option>
                         </select>
                         <!-- {% endif %} -->
                     
@@ -166,8 +160,11 @@ Rule File
 
             </tbody>
         </table>
+        <br><br>
         <button type="submit" name="button" id="button">submit</button> 
+        <span>&nbsp;&nbsp;&nbsp;</span>
         <button type="button" onclick="addrow()">Add a new row </button>
+        <span>&nbsp;&nbsp;&nbsp;</span>
         <button type="button" onclick="deleterow()">Delete row</button>
     </form>
 </body>
@@ -213,18 +210,14 @@ function dtchange(i) {
         vop.options[vop.options.length] = new Option("Null");
         vop.options[vop.options.length] = new Option("Date");
         vop.options[vop.options.length] = new Option("Year");
+        vop.options[vop.options.length] = new Option("Float");
     }
     }
     
-
-
-
-
 function addrow() {
 
 var table = document.getElementById("table");
 var x = document.getElementById("table").rows.length;
-
 
 var row = table.insertRow();
 
@@ -260,7 +253,7 @@ document.getElementById('datatype').name = 'datatype'+x;
 document.getElementById('datatype').id = 'datatype'+x;
 document.getElementById('datatype'+x).onchange = function() {dtchange(x)};
 
-cell7.innerHTML = "<select name='valop' id='valop'><option value='Contains'>Contains</option><option value='Does not contain'>does not contain</option><option value='Regular Expression'>Regular expression</option><option value='Not Null'>Not Null</option><option value='Boolean'>Boolean</option><option value='Null'>Null</option><option value='Equals to'>Equals to</option></select>";
+cell7.innerHTML = "<select name='valop' id='valop'><option value='Contains'>Contains</option><option value='Does not contain'>does not contain</option><option value='Float'>Float</option><option value='Regular Expression'>Regular expression</option><option value='Not Null'>Not Null</option><option value='Boolean'>Boolean</option><option value='Null'>Null</option><option value='Equals to'>Equals to</option></select>";
                             
 document.getElementById('valop').name = 'valop'+x;
 document.getElementById('valop').id = 'valop'+x;
@@ -270,9 +263,6 @@ document.getElementById('valop').id = 'valop'+x;
 cell8.innerHTML = "<input type=text id='valtomatch'></input>";
 document.getElementById('valtomatch').name = 'valtomatch'+x;
 document.getElementById('valtomatch').id = 'valtomatch'+x;
-
-
-
 
 
 }
@@ -294,7 +284,7 @@ function deleterow() {
         document.getElementById("table").deleteRow(i+1);
   }}
  
-  
+ 
   
   
 }

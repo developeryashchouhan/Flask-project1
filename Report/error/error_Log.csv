@@ -1,2 +1,11 @@
 ruleId,colName,errorDesc,validation,errorValue,record
-2,Bool,Boolean validation failed,,45,"{'Month': 'Nov', 'Bool': '45'}"
+2,Bool,Boolean validation failed,,45,"{'Month': 'Nov', 'Bool': '45', 'Float': '23.23'}"
+3,Float,Regex validation failed,[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+),,"{'Month': 'Jul', 'Bool': 'FALSE', 'Float': nan}"
+4,Float,Float validation failed,,0,"{'Month': 'May', 'Bool': 'TRUE', 'Float': '0'}"
+5,Float,Float validation failed,,0,"{'Month': 'May', 'Bool': 'TRUE', 'Float': '0'}"
+6,Float,Float validation failed,,0,"{'Month': 'May', 'Bool': 'TRUE', 'Float': '0'}"
+7,Float,Float validation failed,,0,"{'Month': 'May', 'Bool': 'TRUE', 'Float': '0'}"
+8,Float,Float validation failed,,0,"{'Month': 'May', 'Bool': 'TRUE', 'Float': '0'}"
+9,Float,Float validation failed,,0,"{'Month': 'May', 'Bool': 'TRUE', 'Float': '0'}"
+10,Float,Float validation failed,,0,"{'Month': 'May', 'Bool': 'TRUE', 'Float': '0'}"
+11,Float,Float validation failed,,0,"{'Month': 'May', 'Bool': 'TRUE', 'Float': '0'}"
