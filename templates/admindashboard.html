@@ -11,55 +11,61 @@ Admin Dashboard
 
 {% block content %}
 <header>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a href="https://zingmind.com/"><img class="navbar-brand" src="../static/zingmind.png"   ALT="align box" ALIGN=CENTER></a>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-right">
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a href="https://zingmind.com/"><img class="navbar-brand" src="../static/zingmind.png" ALT="align box"
+            ALIGN=CENTER></a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <div>
             <div class="btn-group" role="group">
               <div class="dropdown">
-                <button class="login_button dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="login_button dropdown-toggle" type="button" id="dropdownMenuButton"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Select Here &#9660;
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                 <li> <a class="dropdown-item" href="{{url_for('manageusers')}}">Manage User</a></li>
+                  <li> <a class="dropdown-item" href="{{url_for('manageusers')}}">Manage User</a></li>
                   <li><a class="dropdown-item" href="{{url_for('signup')}}">Add User</a></li>
-                  <!-- <li><a class="dropdown-item" href="{{url_for('login')}}">Logout</a></li> -->
+                  <!-- <li><a id="logout" class="dropdown-item" href="{{url_for('login')}}">Logout</a></li> -->
                 </div>
               </div>
-             </div>
+            </div>
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-              <form  name="form0" method="POST"  action="{{url_for('Admin_data_validation')}}" >
-                <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"   value="SingleDataSource" class="login_button">SingleDataSource</button></a>&nbsp;&nbsp;
-                <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"  value="DoubleDataSource" class="login_button">DoubleDataSource</button></a>
+              <form name="form0" method="POST" action="{{url_for('Admin_data_validation')}}">
+                <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"
+                    value="SingleDataSource" class="login_button">SingleDataSource</button></a>&nbsp;&nbsp;
+                <a href="{{url_for('Admin_data_validation')}}"><button type="submit" name="Submitbutton"
+                    value="DoubleDataSource" class="login_button">DoubleDataSource</button></a>
               </form>
             </div>
             <a href="{{url_for('login')}}"><button type="submit" id="logout" class="logout_button">Logout</button></a>&nbsp;&nbsp;
           </div>
-            </ul>
-         </div>
-      </div>
-    </nav>
-    
-    
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
-          <h1 align="LEFT">Welcome To Admin Page</h1>
+        </ul>
 
-          
-
-          
-            
-        </div>
       </div>
     </div>
-  </header>
-{% endblock %}
+  </nav>
 
+
+  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <h1 align="LEFT">Welcome To Admin Page</h1>
+
+
+
+
+
+  </div>
+  </div>
+  </div>
+</header>
+{% endblock %}

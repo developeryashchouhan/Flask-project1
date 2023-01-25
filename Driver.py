@@ -97,7 +97,7 @@ def run_driver(request):
     # Read the XLS
     if SOURCE_TYPE == 'XLS':
         csvdf = getDFfromXls(SOURCE_DATA_FILE_PATH, SKIP_ROWS)
-       
+        no_of_rows,no_of_columns=csvdf.shape
 
     # Read the XLS
     if SOURCE_TYPE == 'XLSX':
@@ -115,8 +115,7 @@ def run_driver(request):
     ruleColList = getUniqueValueList(ruleColList)
 
     csvColList = csvdf.columns
-    csvColList = getUniqueValueList(csvColList)
-    
+    csvColList = getUniqueValueList(csvColList)   
 
     csvcolValidator = list_contains(ruleColList, csvColList)
     rulcolValidator = list_contains(csvColList, ruleColList)
@@ -135,7 +134,7 @@ def run_driver(request):
     bigdata = pd.concat([df_rdf, df_csv], axis=1).reindex(df_rdf.index)
     
     bigdata['CsvDataType'] = np.where(bigdata['CsvDataType'] == 'pass', bigdata['DataType'], bigdata['CsvDataType'])
-     
+    # print(bigdata['CsvDataType']) 
     bigdata['CsvDataType'] = np.where(bigdata['DataType'] == 'date', bigdata['DataType'], bigdata['CsvDataType'])
 
     bigdata['Data_Type_Match'] = np.where(bigdata['DataType'] == bigdata['CsvDataType'], 'True', 'False')
@@ -147,7 +146,7 @@ def run_driver(request):
     
     
     # Write bigdata dataframe to a csv
-    Rule_Summary = pd.DataFrame(columns=['RuleId', 'RuleName',  'ColumnName', 'Validation_Result','Datatype_RuleFile','Datatype_OrignalFile','Datatype_Match','Orignalsequence','RuleSequence','SequenceMatch'])
+    Rule_Summary = pd.DataFrame(columns=['RuleId', 'RuleName',  'ColumnName', 'Validation_Result','Datatype_RuleFile','Datatype_OrignalFile','Datatype_Match','RuleSequence','SequenceMatch'])
                        
 
     if "False" in list(bigdata['Data_Type_Match']) :
@@ -166,8 +165,8 @@ def run_driver(request):
     PreSchema_Checked1 = bigdata.loc[bigdata['Column_Match'] == 'False'] 
     PreSchema_Checked2 = bigdata.loc[bigdata['SequenceMatch'] == 'False'] 
    
-    Rule_Summary.loc['0'] = ['NA', 'Precheck-1', 'Precheck-Schema', Column_Match_Flag,'NA','NA','NA','NA','NA',Sequence_Match_Flag]
-    Rule_Summary.loc['1'] = ['NA', 'Precheck-2', 'Precheck-Datatype', Data_Type_Match_Flag,'NA','NA',Data_Type_Match_Flag,'NA','NA','NA']
+    Rule_Summary.loc['0'] = ['NA', 'Precheck-1', 'Precheck-Schema', Column_Match_Flag,'NA','NA','NA','NA',Sequence_Match_Flag]
+    Rule_Summary.loc['1'] = ['NA', 'Precheck-2', 'Precheck-Datatype', Data_Type_Match_Flag,'NA','NA',Data_Type_Match_Flag,'NA','NA']
     
     
     if "Fail" == Data_Type_Match_Flag or "Fail" == Column_Match_Flag:
@@ -185,8 +184,8 @@ def run_driver(request):
         # else:
             #print(rule["DataAttribute"], rule["RuleID"], rule["ValidationOperator"], rule["ValueToBeMatch"])
           
-           Orignal_Datatype = check_dtype(csvdf,rule["DataAttribute"])
-           if Column_Match_Flag == "Pass":
+            Orignal_Datatype = check_dtype(csvdf,rule["DataAttribute"])
+           #if Column_Match_Flag == "Pass":
             var = check_ruleValidation(csvdf, rule["DataAttribute"], rule["RuleID"], rule["ValidationOperator"],
                                        rule["ValueToBeMatch"])
             'RuleId', 'RuleName',  'ColumnName', 'Validation_Result'
@@ -195,25 +194,62 @@ def run_driver(request):
                 Datatype_Match_flag="True"
             else:
                 Datatype_Match_flag="False"
-            if rule["Sequence"]==rule["RuleID"] :
-                SequenceMatch_flag="True"
-            else:
-                SequenceMatch_flag="False"        
+            # if df_rdf['CsvSequence'].all()== df_rdf['Sequence'].all() :
+            #     SequenceMatch_flag="True"
+            # else:
+            #     SequenceMatch_flag="False"        
             
             
             df = { 'RuleId': rule["RuleID"], 'RuleName': rule["RuleName"],
-                   'ColumnName': rule["DataAttribute"],'Datatype_RuleFile': rule["DataType"],'Datatype_OrignalFile':Orignal_Datatype,'Datatype_Match':Datatype_Match_flag,'RuleSequence': rule["Sequence"],'Orignalsequence':rule["RuleID"],'SequenceMatch':SequenceMatch_flag, 'Validation_Result': var}
+                   'ColumnName': rule["DataAttribute"],'ValidationOperator':rule["ValidationOperator"],'Datatype_RuleFile': rule["DataType"],'Datatype_OrignalFile':Orignal_Datatype,'Datatype_Match':Datatype_Match_flag,'RuleSequence': rule["Sequence"],'SequenceMatch':'', 'Validation_Result': var}
             
             df=pd.DataFrame.from_dict(df, orient='index').transpose()
+            
+            
             Rule_Summary = pd.concat([Rule_Summary, df]).reset_index(drop=True)
+    
+    cols_index.insert(0,'NA')
+    cols_index.insert(1,'NA')
+    
+    if len(Rule_Summary['RuleId'])==len(cols_index):
+        Rule_Summary['Orignalsequence']=cols_index
+        Rule_Summary['Orignalsequence'] = Rule_Summary['Orignalsequence'].astype(str)
+    else:
+        rule_length = len(Rule_Summary['RuleId'])
+        original_length = len(cols_index)
+        while original_length < rule_length:
+            cols_index.append('NA')
+            original_length +=1
         
+
+
+                    
+    Rule_Summary['Orignalsequence']=cols_index
+    Rule_Summary['Orignalsequence'] = Rule_Summary['Orignalsequence'].astype(str)
+        
+    Rule_Summary['SequenceMatch'] = np.where((Rule_Summary['Orignalsequence'].astype(str) == Rule_Summary['RuleSequence'].astype(str)), 'True', 'False')
+    Rule_Summary.loc[1]['SequenceMatch']="NA"
+
+
+    if "False" in list(Rule_Summary['SequenceMatch']):
+        Rule_Summary.loc[0]['SequenceMatch']="False"
+        Rule_Summary.loc[0]['ValidationOperator']="NA"
+        Rule_Summary.loc[1]['ValidationOperator']="NA"
+        
+    else:
+        Rule_Summary.loc[0]['SequenceMatch']="True"
+        Rule_Summary.loc[0]['ValidationOperator']="NA"
+        Rule_Summary.loc[1]['ValidationOperator']="NA"
+    
+
+    
             
     html_table = PreSchema_Checked.to_html(index=False, header=True, index_names=False) 
     html_table1 = PreSchema_Checked1.to_html(index=False, header=True, index_names=False) 
     html_table2 = PreSchema_Checked2.to_html(index=False, header=True, index_names=False) 
     fileName = "Report_" + subject + "_" + date + ".csv"
     Rule_Summary.to_csv( reportOutputDir + fileName, index=False)
-    #if Rule_Summary[2:]['Validation_Result'] 
+
     
 
     if  Rule_Summary["Validation_Result"][1] =="Fail" or Rule_Summary["Validation_Result"][0] =="Fail":
@@ -222,6 +258,8 @@ def run_driver(request):
     else:
         isRuleValidationPass="True"
         ruleValidation_dict=Rule_Summary.to_dict('records')
+
+
     if  Rule_Summary["Datatype_Match"][1] =="Fail" :    
         isDatatypeValidationPass="False"
         datatypeValidation_dict=PreSchema_Checked.to_dict('records')
@@ -229,9 +267,10 @@ def run_driver(request):
         isDatatypeValidationPass="True"
         datatypeValidation_dict=PreSchema_Checked.to_dict('records')
 
-    if  Rule_Summary["SequenceMatch"][0] =="Fail" :        
+
+    if  Rule_Summary["SequenceMatch"][0] =="False" :        
         isSchemaValidationPass="False"
-        #schemaValidation_dict=PreSchema_Checked1.to_dict('records')
+        schemaValidation_dict=PreSchema_Checked1.to_dict('records')
         schemaValidation_dict=PreSchema_Checked2.to_dict('records')
     else:
         isSchemaValidationPass="True"
@@ -248,7 +287,8 @@ def run_driver(request):
         f.write(json.dumps(json_object,indent=4))              
     
     
-    print("Rwlesummary\n",Rule_Summary)
+    
+    
 
     rs_rows,rs_columns=Rule_Summary.shape
     #Write the same report csv as html file
@@ -259,7 +299,7 @@ def run_driver(request):
         html = f"<html><body>{html}<br><table>{html_table}</table><br></body></html>"
     # if "Fail" == Column_Match_Flag :
     #     html = f"<html><body>{html}<br><table>{html_table1}</table><br></body></html>"
-    if Rule_Summary["SequenceMatch"][0] =="Fail":
+    if Rule_Summary["SequenceMatch"][0] =="False":
         html = f"<html><body>{html}<br><table>{html_table2}</table><br></body></html>"
 
     filePath =  reportOutputDir
@@ -270,6 +310,6 @@ def run_driver(request):
     stage_file =  "C:/rulengine_master/Report/error/error_Log.csv"
     df = pd.read_csv(stage_file)
     df.drop_duplicates().to_csv( errorOutputDir + errFileName, index=False)
-
+    print("Rwlesummary\n",Rule_Summary)
 
 run_driver(data)

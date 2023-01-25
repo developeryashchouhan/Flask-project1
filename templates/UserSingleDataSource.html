@@ -71,6 +71,7 @@ Single Data Validation
     <select name="datasourcetype" id="datasourcetype"  onchange="data_source_type()" required>
         <option >--Choose--</option>
         <option value="CSV">CSV</option>
+        <option value="XLSX">XLSX</option>
         <!-- <option value="JSON">JSON</option>
         <option value="ORACLE">ORACLE</option>
         <option value="MYSQL">MYSQL</option>
@@ -97,27 +98,56 @@ Single Data Validation
           // datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile' form ='form1' id='datafile'><br>";
           
           var filepath = document.createElement("text");
-          filepath.innerHTML = "<br><label>File Path : </label> <input style='display: inline;' type='file' name='DataSourcePath' id='DataSourcePath ' accept='.csv' required></input><br><br>";
-          
-          var delimiter = document.createElement("text");
-          delimiter.innerHTML = "<label>Delimiter : </label> <input type='text' name='Delimiter' id='Delimiter' value = ',' required></input><br><br>";
-          
-      
-          var output_file_path = document.createElement("text");
-          output_file_path.innerHTML = "<label>output_file_path : </label> <input type='text' name='output_file_path' id='output_file_path'></input><br><br>";
-          
-          // var select_rows = document.createElement("text");
-          // select_rows.innerHTML = "<br><label>select_rows</label><input type='text' name='sskip_rows' id='sskip_rows'></input><br>";
-          
-          // div.appendChild(datafile);
-          div.appendChild(filepath);
-          div.appendChild(delimiter); 
-          div.appendChild(output_file_path);       
-          // div.appendChild(select_rows);
+        filepath.innerHTML = "<br><label>File Path : </label> <input style='display: inline;' type='file' name='DataSourcePath' id='DataSourcePath ' accept='.csv' required></input><br><br>";
+        
+        var delimiter = document.createElement("text");
+        delimiter.innerHTML = "<label>Delimiter : </label> <input type='text' name='Delimiter' id='Delimiter'   required size='2'></input><br>";
+        
+        var output_file_path = document.createElement("text");
+        output_file_path.innerHTML = "<label>output_file_path : </label> <input type='text' name='output_file_path' id='output_file_path'></input><br>";
+        
+        var select_rows = document.createElement("text");
+        select_rows.innerHTML = "<br><label>skip_rows : </label> <input type='text' name='skip_rows' value='0' id='skip_rows' size='2'></input><br><br>";
+        
+        // div.appendChild(datafile);
+        div.appendChild(filepath);
+        div.appendChild(delimiter); 
+        //div.appendChild(output_file_path);       
+        div.appendChild(select_rows);
           
         
           
       }
+      else if(data_type.value=="XLSX"){
+
+var div = document.getElementById("div1")
+div.innerHTML="";
+// var datafile = document.createElement("file");
+// datafile.innerHTML = "<br><label>Upload File</label><input type='file' name='datafile' form ='form1' id='datafile'><br>";
+var filepath = document.createElement("text");
+  filepath.innerHTML = "<br><label>File Path : </label> <input style='display: inline;' type='file' name='DataSourcePath' id='DataSourcePath ' accept='.xls, .xlsx' required></input><br><br>";
+
+
+var sheet_name = document.createElement("text");
+sheet_name.innerHTML = "<label><h4>Sheet_name : </h4></label> <input type='text' name='sheet_name' id='sheet_name' size='10'></input><br>";
+
+
+
+var skip_rows = document.createElement("text");
+  skip_rows.innerHTML = "<label><h4>Skip_rows : </h4></label> <input type='text' name='skip_rows' value='0' id='skip_rows' size='2' /><br>";
+
+var Column_Address = document.createElement("text");
+  Column_Address.innerHTML = "<label><h4>Column_Address : </h4></label> <input type='text' name='Column_Address' id='Column_Address' size='2' /><span> : </span> "; 
+
+  var Column_Address1 = document.createElement("text");
+  Column_Address1.innerHTML = " <input type='text' name='Column_Address1' id='Column_Address1' size='2' />"; 
+// div.appendChild(datafile);
+div.appendChild(filepath);
+div.appendChild(sheet_name);
+div.appendChild(skip_rows);
+div.appendChild(Column_Address);
+div.appendChild(Column_Address1);
+}
       // else if(data_type.value=="JSON"){
       
       //     var div = document.getElementById("div1")
@@ -175,29 +205,5 @@ Single Data Validation
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          
-           
 
 

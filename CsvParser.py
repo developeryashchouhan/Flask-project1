@@ -133,8 +133,8 @@ def unmerge_excel_files(fileName, skip_rows):
    
     #df.to_csv('/dbfs/mnt/sgre-internal/validation_engine/Source/merge_unmerge.csv', index=False, header=False)
     df.to_csv(OUT_FILE, index=True, header=True)
-    print("OUT file",OUT_FILE)
-    print("mmydf",df)
+    # print("OUT file",OUT_FILE)
+    # print("mmydf",df)
 
     return df
 
@@ -165,38 +165,40 @@ def GetColumnDataType(datafram, colName):
 
 def check_dtype(DataFram, colName):
     try:
-    #    if pd.to_datetime(DataFram[colName].str.split(' ').str[0], format='%y-%m-%d').notnull().all()  :
-    #        return "date"
-    # except:
-    #    pass
+       if pd.to_datetime(DataFram[colName].str.split(' ').str[0], format='%y-%m-%d').notnull().all()  :
+           return "date"
+    except:
+        pass
         if DataFram[colName].eq('').all() or pd.isnull(DataFram[colName]).all():
             print("pass")
             return "pass"
-        elif DataFram[colName].dropna().isin(['Yes', 'No']).all():
+        if DataFram[colName].dropna().isin(['Yes', 'No']).all():
             return "bool"
-        elif DataFram[colName].dropna().astype(str).str.contains(pat='[a-zA-Z/-]', regex=True).any():
+        if DataFram[colName].dropna().astype(str).str.contains(pat='[a-zA-Z/-]', regex=True).any():
             return "string"
-        # elif DataFram[colName].dropna().astype(str).str.contains(pat='[a-zA-Z0-9/-]', regex=True).any():
-        #     return "string"
-        # if DataFram[colName].dropna().astype(str).str.contains(r'[@#&$%+/^*]').any():
-        #    print("Is Not String")
-        # else:
-        #    print("String")
-        # if (DataFram[colName].fillna(-9999) % 1 ==0).all():
-        #    return "int"
-        #try:
+        if DataFram[colName].dropna().astype(str).str.contains(pat='[a-zA-Z0-9/-]', regex=True).any():
+            return "string"
+        if DataFram[colName].dropna().astype(str).str.contains(r'[@#&$%+/^*]').any():
+           print("Is Not String")
+        else:
+           print("String")
 
-        elif (DataFram[colName].str.replace('.', '', regex=True).fillna(-9999).astype(int)).all():
+        if (DataFram[colName].fillna(-9999) % 1 ==0).all():
+            return "int"
+
+        try:
+            if (DataFram[colName].str.replace('.', '', regex=True).fillna(-9999).astype(int)).all():
                 if (DataFram[colName].dropna().astype(float) % 1 != 0.0).any():
                     return "float"
                 else:
                     return "int"
-    except:
-        pass
+        except:
+            pass
 
 
 # Method to perform business validation
 # Method to perform business validation
+
 def check_ruleValidation(DataFram, colName, Rule_id, validation_operator, value_to_be_match):
 
     stage_file = "C:/rulengine_master/Report/error/error_Log.csv"
@@ -316,10 +318,22 @@ def check_ruleValidation(DataFram, colName, Rule_id, validation_operator, value_
     elif "Boolean" in validation_operator:       
 
       for jdict in DataFram[(DataFram[colName].astype(str).str.upper().str.strip().isin(['TRUE','FALSE','0','1'])).astype(str) == 'False'].to_dict(orient='records'): 
-            print(jdict)
+            
             err_summary["ruleId"].append(Rule_id)
             err_summary["colName"].append(colName)
             err_summary["errorDesc"].append("Boolean validation failed")
+            err_summary["validation"].append(value_to_be_match)
+            err_summary["errorValue"].append(jdict[colName])
+            err_summary["record"].append(jdict)
+            var1 = "Fail"
+
+    elif "Float" in validation_operator:       
+
+      for jdict in DataFram[DataFram[colName].str.strip().astype(float) == False].to_dict(orient='records'): 
+            
+            err_summary["ruleId"].append(Rule_id)
+            err_summary["colName"].append(colName)
+            err_summary["errorDesc"].append("Float validation failed")
             err_summary["validation"].append(value_to_be_match)
             err_summary["errorValue"].append(jdict[colName])
             err_summary["record"].append(jdict)

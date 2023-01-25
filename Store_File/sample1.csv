@@ -1,0 +1,12 @@
+Month,Bool,Float
+May,TRUE,0
+Jun,TRUE,1.1
+Jul,FALSE,
+Aug,FALSE,0.1
+Sep,FALSE,36.564
+Oct,                                                 FALSE,456.8527895
+Nov,45,23.23
+Dec,1,1.23456789
+Jan,1,11
+Feb,0,20
+Feb,TRUE,2

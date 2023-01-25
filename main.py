@@ -26,14 +26,9 @@ import datetime
 import config
 
 
-
-
-
-
-
 app = Flask(__name__)
 app.config["DEBUG"] = True
-app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:root@localhost/data_validation'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:12345@localhost/data_validation'
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SESSION_PERMANENT"] = False
@@ -58,6 +53,7 @@ login_manager.login_view= 'login'
 mysql = MySQL(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+
 a=os.path.basename(os.path.dirname(__file__))
 dirname=os.path.dirname(__file__)
 UPLOAD_FOLDER = os.path.join(basedir,'/')
@@ -163,12 +159,7 @@ def send_mail(user):
     pswd = "qfgcupcdjotabklg"
     
     message = f'''To reset ur password click on link
-
-
            {url_for('reset_token',token=token,_external=True)}
-
-
-
             IF YOU DID'NT SEND A PASSWORD RESET REQUEST. PLEASE IGNORE THIS MESSAGE
    '''
     simple_email_context = ssl.create_default_context()
@@ -373,8 +364,6 @@ def logout():
 	logout_user()
 	return redirect(url_for('index'))
 
-
-
 #Data Validation source selection
 @app.route('/Admin_data_validation',methods=['POST','GET'])
 @login_required
@@ -384,7 +373,8 @@ def Admin_data_validation():
         else:
             return render_template('AdminDoubleDataSource.html')
     
-#Single Data Source Validation
+############ Admin Single Data Source Validation  ##########################
+
 @app.route("/Admin_SingleDataSource", methods=['POST','GET'])
 @login_required
 def Admin_SingleDataSource():
@@ -395,7 +385,7 @@ def Admin_SingleDataSource():
             file = request.files['DataSourcePath']
             filename = secure_filename(file.filename)
             #file_path=os.path.join(basedir, file.filename)
-            file_path = os.path.abspath(filename)
+            file_path = os.path.abspath('Store_File\\'+filename)
             delimiter = request.form['Delimiter']
             output_file_path = 'C:\\rulengine_master\Report'
             SKIP_ROWS = request.form['skip_rows']
@@ -404,13 +394,14 @@ def Admin_SingleDataSource():
             Column_Address1="None"
             data = pd.read_csv(file_path,sep=delimiter,engine='python',encoding='latin1')          
             col_list = list(data.columns)
+            # print(col_list)
             data_type_list = list(data.iloc[1])
 
         elif data_source_type=='XLSX' or data_source_type=='XLS':             
             file = request.files['DataSourcePath']
             filename = secure_filename(file.filename)
             #file_path=os.path.join(basedir, file.filename)
-            file_path = os.path.abspath(filename)
+            file_path = os.path.abspath('Store_File\\'+filename)
             output_file_path = 'C:\\rulengine_master\Report'
             SKIP_ROWS = request.form['skip_rows']
             SHEET_NAME=request.form['sheet_name']
@@ -419,7 +410,7 @@ def Admin_SingleDataSource():
             data = pd.read_excel(file_path, engine='openpyxl',sheet_name=SHEET_NAME, skiprows=SKIP_ROWS, dtype=object)
             delimiter=','          
             col_list = list(data.columns)
-
+         
          
             
         try:
@@ -515,9 +506,6 @@ def get_datatype(datafram,colName):
     #     raise        
 
 
-
-
-
 @app.route("/download")
 @login_required
 def download_file():
@@ -532,6 +520,9 @@ def Regex():
 
 
 # DOuble Data Source Validation
+
+
+
 @app.route("/Admin_DoubleDataSource", methods=['POST','GET']) 
 @login_required
 def Admin_DoubleDataSource():
@@ -612,7 +603,9 @@ def Admin_DoubleDataSource():
             with open("C:\\rulengine_master\configuration.ini", 'w') as file:
                 parser.write(file)
          
-        # data dest 
+        # data dest
+        
+
         data_source_type = request.form['datadesttype']
         parser.set("APP",'DEST_TYPE',data_source_type)
 
@@ -687,7 +680,7 @@ def Admin_DoubleDataSource():
         print(Exception)
         raise
         
-#######################user#################
+#######################   user   #################################
 
 @app.route('/User_data_validation',methods=['POST','GET'])
 @login_required
@@ -708,23 +701,49 @@ def User_SingleDataSource():
         if data_source_type=='CSV':             
             file = request.files['DataSourcePath']
             filename = secure_filename(file.filename)
-            file_path=os.path.join(basedir, file.filename)
+            #file_path=os.path.join(basedir, file.filename)
+            file_path = os.path.abspath('Store_File\\'+filename)
             delimiter = request.form['Delimiter']
-            output_file_path = request.form['output_file_path']
-            data = pd.read_csv(file_path)
+            output_file_path = 'C:\\rulengine_master\Report'
+            SKIP_ROWS = request.form['skip_rows']
+            SHEET_NAME="None"
+            Column_Address="None"
+            Column_Address1="None"
+            data = pd.read_csv(file_path,sep=delimiter,engine='python',encoding='latin1')          
             col_list = list(data.columns)
+            # print(col_list)
             data_type_list = list(data.iloc[1])
+
+        elif data_source_type=='XLSX' or data_source_type=='XLS':             
+            file = request.files['DataSourcePath']
+            filename = secure_filename(file.filename)
+            #file_path=os.path.join(basedir, file.filename)
+            file_path = os.path.abspath('Store_File\\'+filename)
+            output_file_path = 'C:\\rulengine_master\Report'
+            SKIP_ROWS = request.form['skip_rows']
+            SHEET_NAME=request.form['sheet_name']
+            Column_Address=request.form['Column_Address']
+            Column_Address1=request.form['Column_Address1']
+            data = pd.read_excel(file_path, engine='openpyxl',sheet_name=SHEET_NAME, skiprows=SKIP_ROWS, dtype=object)
+            delimiter=','          
+            col_list = list(data.columns)
+         
+
+
         try:
              
-            with open("C:\\rulengine_master\configuration.ini", 'w') as file:    
+            with open("C:\\rulengine_master\configuration.ini", 'w') as file:     
                 file.write("")  
             parser.add_section("APP")            
             parser.set("APP",'RULE_FILE_PATH',os.getcwd()+"\\rule_file.json")
             parser.set("APP",'SOURCE_TYPE',data_source_type)
-            parser.set("APP",'OUTPUT_FILE',output_file_path)
+            parser.set("APP",'OUTPUT_FILE_PATH',output_file_path)
             parser.add_section("SOURCE")
-            parser.set("SOURCE","SOURCE_DATA_FILE_PATH", file_path)
-            parser.set("SOURCE","Delimiter", delimiter)
+            parser.set("SOURCE",'SOURCE_DATA_FILE_PATH', file_path)
+            parser.set("SOURCE",'SKIP_ROWS', SKIP_ROWS) 
+            parser.set("SOURCE",'SHEET_NAME', SHEET_NAME)
+            parser.set("SOURCE",'Column_Address', Column_Address)
+            parser.set("SOURCE",'Column_Address1', Column_Address1)
            
             with open("C:\\rulengine_master\configuration.ini", 'w') as file: 
                 parser.write(file)
@@ -733,7 +752,7 @@ def User_SingleDataSource():
              print(Exception)
              raise
 
-        return render_template('rule_file_generator.html',file_path=file_path,data=data,file_name = filename, col_list=col_list,datatype_list=[get_datatype(data) for data in data_type_list],len = len(col_list))
+        return render_template('rule_file_generator.html',file_path=file_path,delimiter=delimiter,data=data,file_name = filename, col_list=col_list,datatype_list=[get_datatype(data,colName) for  colName in col_list],len = len(col_list))
     except:
         print(Exception)
         raise
@@ -743,6 +762,7 @@ def User_SingleDataSource():
 
 
 # DOuble Data Source Validation
+
 @app.route("/User_DoubleDataSource", methods=['POST','GET']) 
 @login_required
 def User_DoubleDataSource():
@@ -751,19 +771,17 @@ def User_DoubleDataSource():
     try:
         with open("C:\\rulengine_master\configuration.ini", 'w') as file:
             file.write("")  
-        output_file_path = request.form['output_file_path'] 
-        
+        output_file_path = request.form['output_file_path']     
         
 
-        data_source_type = request.form['datasourcetype']
-
-        
+        data_source_type = request.form['datasourcetype']        
         
         if data_source_type == 'CSV':
 
             file1 = request.files['DataSourcePath1'] 
             filename1=secure_filename(file1.filename)
-            file_path1=os.path.join(basedir, file1.filename)
+            file_path1=os.path.join(basedir+'Store_File\\'+file1.filename)
+            print(file_path1)
             delimiter1 = request.form['Delimiter1']
             
             parser.add_section("APP")
@@ -903,6 +921,4 @@ def User_DoubleDataSource():
 #app run
 if (__name__ == "__main__"):
      app.run(debug=True)
-
-
 
