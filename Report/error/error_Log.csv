@@ -1,3 +1,0 @@
-ruleId,colName,errorDesc,validation,errorValue,record
-2,Bool,Boolean validation failed,,45,"{'Month': 'Nov', 'Bool': '45', 'Float': '23.23'}"
-3,Float,Float validation failed,,0,"{'Month': 'May', 'Bool': 'TRUE', 'Float': '0'}"
