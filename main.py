@@ -23,20 +23,23 @@ from itsdangerous import URLSafeTimedSerializer as Serializer
 import smtplib
 import ssl
 import datetime
-import config
+#import config
+from LICENSE import is_valid_license
+
+
 
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:12345@localhost/data_validation'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:root@localhost/data_validation'
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config.from_object(config)
-license_key = app.config['LICENSE_KEY']
-decryption_data=app.config['DECRYPTION_DATA']
-decryption_key=app.config['DECRYPTION_KEY']
+#app.config.from_object(config)
+# license_key = app.config['LICENSE_KEY']
+# decryption_data=app.config['DECRYPTION_DATA']
+# decryption_key=app.config['DECRYPTION_KEY']
 
 #app.config['SECRET_KEY']
 
@@ -53,7 +56,6 @@ login_manager.login_view= 'login'
 mysql = MySQL(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
 a=os.path.basename(os.path.dirname(__file__))
 dirname=os.path.dirname(__file__)
 UPLOAD_FOLDER = os.path.join(basedir,'/')
@@ -159,7 +161,10 @@ def send_mail(user):
     pswd = "qfgcupcdjotabklg"
     
     message = f'''To reset ur password click on link
+
+
            {url_for('reset_token',token=token,_external=True)}
+
             IF YOU DID'NT SEND A PASSWORD RESET REQUEST. PLEASE IGNORE THIS MESSAGE
    '''
     simple_email_context = ssl.create_default_context()
@@ -212,34 +217,15 @@ def reset_token(token):
         return redirect(url_for('login'))
        
 
-    return render_template('change_password.html',form=form)
-       
-@app.route('/', methods=['POST'])
-def verify_key():
-    # input_key = request.form['key']
-    if license_key:
-       now = datetime.datetime.now()
-       date_format = "%Y-%m-%d"
-       expiration_date = datetime.datetime.strptime(decryption_data["expiry_date"], date_format)
-       
 
-       if now > expiration_date:
-            print("License has expired")
-            flash('License has expired','danger')
-            return render_template("index.html",key_valid=True)
-       else:
-            return redirect(url_for('login'))
-    
-        
 
-@app.route('/',methods=['GET','POST'])
+@app.route('/',methods=['GET'])
 def index():
-    verify_key()
-    return render_template("index.html", key_valid=False)
-    
+        return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST']) 
 def login():
+  if is_valid_license():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data ).first()
@@ -270,7 +256,13 @@ def login():
                 return render_template('login.html',form=form)
     user1 = User.query.filter_by(username=form.username.data ).all()
     return render_template('login.html',form=form,user=user1)
+  else:
+        print("license key Expired")
+        return redirect(url_for('license_expired'))
 
+@app.route('/license-expired')
+def license_expired():
+    return render_template('license_expired.html')  
          
 @app.route('/admindashboard',methods=['GET','POST'])
 @token_required
@@ -921,4 +913,3 @@ def User_DoubleDataSource():
 #app run
 if (__name__ == "__main__"):
      app.run(debug=True)
-
